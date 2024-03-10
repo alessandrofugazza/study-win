@@ -1,7 +1,7 @@
 unworkableData :=
     [
         "AHK",
-        "miscellaneous",
+        "Miscellaneous",
         "DSA", {
             name: "webdev",
             data: [
@@ -9,29 +9,62 @@ unworkableData :=
                 "CSS",
                 "JavaScript",
                 "TypeScript",
-                "bootstrap",
-                "java",
-                "spring",
-                "react",
-                "react bootstrap"
+                "Bootstrap",
+                "Java",
+                "Spring",
+                "React",
+                "React Bootstrap"
             ]
-        },
-        "IntelliJ",
-        "VS Code",
-        "devtools", {
+        }, {
+            name: "devtools",
+            data: [
+                "IntelliJ",
+                "VS Code",
+                "Chrome Devtools"
+            ]
+        }, {
             name: "icdl",
             data: [
-                "computer essentials",
-                "online essentials",
+                "Computer Essentials",
+                "Online Essentials",
                 "IT Security",
-                "online collaboration"
+                "Online Collaboration"
             ]
         }, {
             name: "office",
             data: [
                 "PowerPoint",
-                "word",
-                "excel"
+                "Word",
+                "Excel"
+            ]
+        }, {
+            name: "real shit",
+            data: [
+                "Clean Up",
+                "Workout"
             ]
         }
     ]
+
+getWeights(arr) {
+    totalWeight := 0
+    weights := []
+    for index, value in arr {
+        weight := 1.5 ** (index - 1)
+        totalWeight += weight
+        weights.Push(totalWeight)
+    }
+    return weights
+}
+
+
+workableData := { data: unworkableData, weights: getWeights(unworkableData), len: unworkableData.Length }
+
+for index, value in workableData.data
+{
+    if (IsObject(value)) {
+        value.len := value.data.Length
+        value.weights := getWeights(value.data)
+    } else {
+    }
+}

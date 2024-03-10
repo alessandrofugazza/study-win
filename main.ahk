@@ -6,28 +6,6 @@
 SetTitleMatchMode 3
 
 
-; activateTopic() {
-;     if WinActive(newTopic) {
-;         WinMinimize()
-;     } else {
-;         try {
-;             WinActivate(newTopic)
-;         } catch {
-;             MsgBox newTopic, "TOPICS", "T2"
-;         }
-;     }
-; }
-
-; nextTopic() {
-;     global
-;     loop {
-;         local i := Random(1, topicsLen)
-;         newTopic := topics[i]
-;     } until (newTopic != prevTopic)
-;     prevTopic := newTopic
-;     activateTopic()
-; }
-
 ; clearTopic() {
 ;     global
 ;     newTopic := ''
@@ -36,17 +14,57 @@ SetTitleMatchMode 3
 
 ; }
 
-workableData := { data: unworkableData, length: unworkableData.Length }
+prevTopic := ""
 
-for index, value in workableData.data
-{
-    if (IsObject(value)) {
-        value.len := value.data.Length
+
+; NumpadPgdn:: clearTopic()
+
+activateTopic(topicName) {
+    if WinActive(topicName) {
+        WinMinimize()
+    } else {
+        try {
+            WinActivate(topicName)
+        } catch {
+            MsgBox topicName, "TOPICS", "T2"
+        }
     }
 }
 
-MsgBox(workableData.data[4].len)
+NumpadEnter:: {
+    global prevTopic
+outer:
+    while (true) {
+        rand := Random(1, workableData.weights[workableData.len])
+        for index, cumulativeWeight in workableData.weights {
+            if (rand <= cumulativeWeight) {
+                randomTopic := workableData.data[index]
+                if (IsObject(randomTopic)) {
+                    if randomTopic.name == prevTopic
+                        continue outer
+                } else {
+                    if randomTopic == prevTopic
+                        continue outer
+                }
+                if (IsObject(randomTopic)) {
+                    rand2 := Random(1, randomTopic.weights[randomTopic.len])
+                    for index2, cumulativeWeight2 in randomTopic.weights {
+                        if (rand2 <= cumulativeWeight2) {
+                            randomTopic2 := randomTopic.data[index2]
+                            prevTopic := randomTopic.name
+                            activateTopic(randomTopic2)
+                            break outer
+                        }
+                    }
+                } else {
+                    prevTopic := randomTopic
+                    activateTopic(randomTopic)
+                    break outer
+                }
+            }
+        }
+    }
 
-; NumpadPgdn:: clearTopic()
-; NumpadEnter:: nextTopic()
-; NumpadDel:: activateTopic()
+}
+
+NumpadDel:: activateTopic(prevTopic)
