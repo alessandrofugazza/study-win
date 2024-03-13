@@ -15,6 +15,7 @@ SetTitleMatchMode 3
 ; }
 
 prevTopic := ""
+prevActualTopic := ""
 
 
 ; NumpadPgdn:: clearTopic()
@@ -33,6 +34,7 @@ activateTopic(topicName) {
 
 NumpadEnter:: {
     global prevTopic
+    global prevActualTopic
 outer:
     while (true) {
         rand := Random(1, workableData.weights[workableData.len])
@@ -52,12 +54,14 @@ outer:
                         if (rand2 <= cumulativeWeight2) {
                             randomTopic2 := randomTopic.data[index2]
                             prevTopic := randomTopic.name
+                            prevActualTopic := randomTopic2
                             activateTopic(randomTopic2)
                             break outer
                         }
                     }
                 } else {
                     prevTopic := randomTopic
+                    prevActualTopic := randomTopic
                     activateTopic(randomTopic)
                     break outer
                 }
@@ -67,4 +71,4 @@ outer:
 
 }
 
-NumpadDel:: activateTopic(prevTopic)
+NumpadDel:: activateTopic(prevActualTopic)
