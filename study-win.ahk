@@ -6,19 +6,8 @@
 SetTitleMatchMode 3
 
 
-; clearTopic() {
-;     global
-;     newTopic := ''
-;     prevTopic := ''
-;     nextTopic()
+loadPrevious()
 
-; }
-
-prevTopic := ""
-prevActualTopic := ""
-
-
-; NumpadPgdn:: clearTopic()
 
 activateTopic(topicName) {
     if WinActive(topicName) {
@@ -32,43 +21,48 @@ activateTopic(topicName) {
     }
 }
 
-NumpadEnter:: {
+savePrevious(category, topic) {
+    IniWrite category, "data.ini", "previous", "category"
+    IniWrite topic, "data.ini", "previous", "topic"
+}
+
+loadPrevious() {
+    global prevCategory
     global prevTopic
-    global prevActualTopic
+    prevCategory := IniRead("data.ini", "previous", "category")
+    prevTopic := IniRead("data.ini", "previous", "topic")
+}
+
+
+NumpadEnter:: {
+    global prevCategory
+    global prevTopic
+    loadPrevious()
 outer:
     while (true) {
         rand := Random(1, workableData.weights[workableData.len])
         for index, cumulativeWeight in workableData.weights {
             if (rand <= cumulativeWeight) {
-                randomTopic := workableData.data[index]
-                if (IsObject(randomTopic)) {
-                    if randomTopic.name == prevTopic
-                        continue outer
-                } else {
-                    if randomTopic == prevTopic
-                        continue outer
-                }
-                if (IsObject(randomTopic)) {
-                    rand2 := Random(1, randomTopic.weights[randomTopic.len])
-                    for index2, cumulativeWeight2 in randomTopic.weights {
-                        if (rand2 <= cumulativeWeight2) {
-                            randomTopic2 := randomTopic.data[index2]
-                            prevTopic := randomTopic.name
-                            prevActualTopic := randomTopic2
-                            activateTopic(randomTopic2)
-                            break outer
-                        }
+                randomCategory := workableData.data[index]
+                if randomCategory.name == prevCategory
+                    continue outer
+                rand2 := Random(1, randomCategory.weights[randomCategory.len])
+                for index2, cumulativeWeight2 in randomCategory.weights {
+                    if (rand2 <= cumulativeWeight2) {
+                        randomTopic := randomCategory.data[index2]
+                        prevCategory := randomCategory.name
+                        prevTopic := randomTopic
+                        activateTopic(randomTopic)
+                        savePrevious(randomCategory.name, randomTopic)
+                        break outer
                     }
-                } else {
-                    prevTopic := randomTopic
-                    prevActualTopic := randomTopic
-                    activateTopic(randomTopic)
-                    break outer
                 }
+
             }
         }
     }
 
 }
 
-NumpadDel:: activateTopic(prevActualTopic)
+NumpadDel:: activateTopic(prevTopic)
+NumpadIns:: activateTopic("ICDL")

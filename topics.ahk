@@ -1,50 +1,65 @@
 unworkableData :=
-    [
-        "AHK",
-        "Miscellaneous",
-        "DSA", {
-            name: "webdev",
-            data: [
-                "HTML",
-                "CSS",
-                "JavaScript",
-                "TypeScript",
-                "Bootstrap",
-                "Java",
-                "Spring",
-                "React",
-                "React Bootstrap"
-            ]
-        }, {
-            name: "devtools",
-            data: [
-                "IntelliJ",
-                "VS Code",
-                "Chrome Devtools"
-            ]
-        }, {
-            name: "icdl",
-            data: [
-                "Computer Essentials",
-                "Online Essentials",
-                "IT Security",
-                "Online Collaboration"
-            ]
-        }, {
-            name: "office",
-            data: [
-                "PowerPoint",
-                "Word",
-                "Excel"
-            ]
-        }, {
+    [{
+        name: "ahk",
+        data: [
+            "AHK"
+        ]
+    }, {
+        name: "miscellaneous",
+        data: [
+            "Miscellaneous"
+        ]
+    }, {
+        name: "webdev",
+        data: [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "TypeScript",
+            "Bootstrap",
+            "Java",
+            "Spring",
+            "React",
+            "React Bootstrap"
+        ]
+    }, {
+        name: "devtools",
+        data: [
+            "IntelliJ",
+            "VS Code",
+            "Chrome Devtools"
+        ]
+    }, {
+        name: "warehouse",
+        data: [
+            "Forklift"
+        ]
+    }, {
+        name: "icdl",
+        data: [
+            "Computer Essentials",
+            "Online Essentials",
+            "IT Security",
+            "Online Collaboration"
+        ]
+    },
+        ; {
+        ;     name: "office",
+        ;     data: [
+        ;         "PowerPoint",
+        ;         "Word",
+        ;         "Excel"
+        ;     ]
+        ; },
+        {
             name: "real shit",
             data: [
-                "Clean Up",
-                "Workout"
+                "Improvement",
+                "Clean Up"
             ]
         }
     ]
+
 
 getWeights(arr) {
     totalWeight := 0
@@ -62,9 +77,6 @@ workableData := { data: unworkableData, weights: getWeights(unworkableData), len
 
 for index, value in workableData.data
 {
-    if (IsObject(value)) {
-        value.len := value.data.Length
-        value.weights := getWeights(value.data)
-    } else {
-    }
+    value.len := value.data.Length
+    value.weights := getWeights(value.data)
 }
