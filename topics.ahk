@@ -1,13 +1,18 @@
 unworkableData :=
     [{
+        name: "postman",
+        data: [
+            "Postman"
+        ]
+    }, {
+        name: "fastweb",
+        data: [
+            "Fastweb"
+        ]
+    }, {
         name: "ahk",
         data: [
             "AHK"
-        ]
-    }, {
-        name: "miscellaneous",
-        data: [
-            "Miscellaneous"
         ]
     }, {
         name: "webdev",
@@ -16,11 +21,11 @@ unworkableData :=
             "CSS",
             "JavaScript",
             "TypeScript",
-            "Bootstrap",
             "Java",
             "Spring",
             "React",
             "React Bootstrap"
+            "Bootstrap",
         ]
     }, {
         name: "devtools",
@@ -29,20 +34,27 @@ unworkableData :=
             "VS Code",
             "Chrome Devtools"
         ]
-    }, {
-        name: "warehouse",
-        data: [
-            "Forklift"
-        ]
-    }, {
-        name: "icdl",
-        data: [
-            "Computer Essentials",
-            "Online Essentials",
-            "IT Security",
-            "Online Collaboration"
-        ]
     },
+        ; {
+        ;     name: "warehouse",
+        ;     data: [
+        ;         "Forklift"
+        ;     ]
+        ; },
+        {
+            name: "its",
+            data: [
+                "ITS"
+            ]
+        }, {
+            name: "icdl",
+            data: [
+                "Computer Essentials",
+                "Online Essentials",
+                "IT Security",
+                "Online Collaboration"
+            ]
+        },
         ; {
         ;     name: "office",
         ;     data: [
@@ -65,7 +77,7 @@ getWeights(arr) {
     totalWeight := 0
     weights := []
     for index, value in arr {
-        weight := 1.4 ** (index - 1)
+        weight := 1.2 ** (index - 1)
         totalWeight += weight
         weights.Push(totalWeight)
     }

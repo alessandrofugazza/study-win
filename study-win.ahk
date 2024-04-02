@@ -5,9 +5,16 @@
 #SingleInstance force
 SetTitleMatchMode 3
 
+A_ScriptName := "Study"
+
+iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
+TraySetIcon iconPath
+
+
+hooks := { hook1: "", hook2: "" }
 
 loadPrevious()
-
+loadHooks()
 
 activateTopic(topicName) {
     if WinActive(topicName) {
@@ -26,17 +33,64 @@ savePrevious(category, topic) {
     IniWrite topic, "data.ini", "previous", "topic"
 }
 
+saveHooks() {
+    IniWrite hooks.hook1, "data.ini", "hook1", "topic"
+    IniWrite hooks.hook2, "data.ini", "hook2", "topic"
+}
+
+loadHooks() {
+    global hooks
+    hooks.hook1 := IniRead("data.ini", "hook1", "topic")
+    hooks.hook2 := IniRead("data.ini", "hook2", "topic")
+}
+
 loadPrevious() {
-    global prevCategory
-    global prevTopic
+    global prevCategory, prevTopic
     prevCategory := IniRead("data.ini", "previous", "category")
     prevTopic := IniRead("data.ini", "previous", "topic")
 }
 
+; FUCKING HELL
+hook(prevTopic) {
+    global hooks
+    if prevTopic == hooks.hook1 {
+        hooks.hook1 := ""
+        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
+        saveHooks()
+        return
+    } else if prevTopic == hooks.hook2 {
+        hooks.hook2 := ""
+        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
+        saveHooks()
+        return
+    }
+    if hooks.hook1 != "" {
+        if hooks.hook2 != "" {
+            MsgBox "no more hooks available bitch"
+        } else {
+            hooks.hook2 := prevTopic
+            saveHooks()
+            MsgBox "`"" prevTopic "`" hooked", , "T2"
+        }
+    } else {
+        hooks.hook1 := prevTopic
+        saveHooks()
+        MsgBox "`"" prevTopic "`" hooked", , "T2"
+    }
+}
 
 NumpadEnter:: {
-    global prevCategory
-    global prevTopic
+    global prevCategory, prevTopic
+    ; FUCKING HELL
+    if hooks.hook1 && prevTopic != hooks.hook1 {
+        activateTopic(hooks.hook1)
+        prevTopic := hooks.hook1
+        return
+    } else if hooks.hook2 && prevTopic != hooks.hook2 {
+        activateTopic(hooks.hook2)
+        prevTopic := hooks.hook2
+        return
+    }
     loadPrevious()
 outer:
     while (true) {
@@ -66,3 +120,4 @@ outer:
 
 NumpadDel:: activateTopic(prevTopic)
 NumpadIns:: activateTopic("ICDL")
+NumpadPgdn:: hook(prevTopic)
