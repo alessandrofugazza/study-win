@@ -1,52 +1,75 @@
 unworkableData :=
     [{
+        name: "google",
+        data: [
+            "Google"
+        ]
+    }, {
         name: "postman",
         data: [
             "Postman"
         ]
-    }, {
-        name: "fastweb",
-        data: [
-            "Fastweb"
-        ]
-    }, {
-        name: "ahk",
-        data: [
-            "AHK"
-        ]
-    }, {
-        name: "webdev",
-        data: [
-            "HTML",
-            "CSS",
-            "JavaScript",
-            "TypeScript",
-            "Java",
-            "Spring",
-            "React",
-            "React Bootstrap"
-            "Bootstrap",
-        ]
-    }, {
-        name: "devtools",
-        data: [
-            "IntelliJ",
-            "VS Code",
-            "Chrome Devtools"
-        ]
     },
+        ; {
+        ;     name: "fastweb",
+        ;     data: ["Fastweb"]
+        ; },
+        {
+            name: "english",
+            data: ["English"]
+        }, {
+            name: "ios shortcuts",
+            data: ["iOS Shortcuts"]
+        }, {
+            name: "swiftui",
+            data: ["SwiftUI"]
+        }, {
+            name: "ahk",
+            data: ["AHK"]
+        }, {
+            name: "webdev",
+            data: [
+                "HTML",
+                "CSS",
+                "JavaScript",
+                "TypeScript",
+                "Java",
+                "Spring",
+                "React",
+                "React Bootstrap"
+                "Bootstrap",
+            ]
+        }, {
+            name: "japanese",
+            data: ["Japanese"]
+        }, {
+            name: "german",
+            data: ["German"]
+        }, {
+            name: "devtools",
+            data: [
+                "IntelliJ",
+                "VS Code",
+                "Chrome Devtools"
+            ]
+        },
+        ; {
+        ;     name: "poker",
+        ;     data: ["Poker"]
+        ; },
         ; {
         ;     name: "warehouse",
         ;     data: [
         ;         "Forklift"
         ;     ]
         ; },
+        ; {
+        ;     name: "its",
+        ;     data: [
+        ;         "ITS"
+        ;     ]
+        ; },
         {
-            name: "its",
-            data: [
-                "ITS"
-            ]
-        }, {
             name: "icdl",
             data: [
                 "Computer Essentials",
@@ -54,20 +77,18 @@ unworkableData :=
                 "IT Security",
                 "Online Collaboration"
             ]
-        },
-        ; {
-        ;     name: "office",
-        ;     data: [
-        ;         "PowerPoint",
-        ;         "Word",
-        ;         "Excel"
-        ;     ]
-        ; },
-        {
+        }, {
+            name: "office",
+            data: [
+                "PowerPoint",
+                "Word",
+                ; "Excel"
+            ]
+        }, {
             name: "real shit",
             data: [
                 "Improvement",
-                "Clean Up"
+                "Task",
             ]
         }
     ]
@@ -77,7 +98,7 @@ getWeights(arr) {
     totalWeight := 0
     weights := []
     for index, value in arr {
-        weight := 1.2 ** (index - 1)
+        weight := 1.2 ** (index)
         totalWeight += weight
         weights.Push(totalWeight)
     }

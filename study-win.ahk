@@ -6,6 +6,7 @@
 SetTitleMatchMode 3
 
 A_ScriptName := "Study"
+A_IconTip := "Study"
 
 iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon iconPath
@@ -23,7 +24,11 @@ activateTopic(topicName) {
         try {
             WinActivate(topicName)
         } catch {
-            MsgBox topicName, "TOPICS", "T2"
+            if topicName == hooks.hook1 || topicName == hooks.hook2
+                MsgBox topicName "  [HOOKED]", , "T2"
+            else
+                MsgBox topicName, , "T2"
+
         }
     }
 }
@@ -118,6 +123,22 @@ outer:
 
 }
 
-NumpadDel:: activateTopic(prevTopic)
-NumpadIns:: activateTopic("ICDL")
-NumpadPgdn:: hook(prevTopic)
+prevFocus := IniRead("data.ini", "previous", "focus")
+
+NumpadPgdn:: activateTopic(prevTopic)
+NumpadIns:: {
+    ; shit
+    prevFocus := IniRead("data.ini", "previous", "focus")
+    if prevFocus == "ICDL" {
+        WinActivate("SQL.PDF - Adobe Acrobat Reader (64-bit)")
+        IniWrite "SQL.PDF - Adobe Acrobat Reader (64-bit)", "data.ini", "previous", "focus"
+
+    }
+    else {
+        WinActivate("ICDL")
+        IniWrite "ICDL", "data.ini", "previous", "focus"
+
+    }
+}
+
+NumpadDel:: hook(prevTopic)
