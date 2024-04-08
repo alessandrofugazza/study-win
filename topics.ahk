@@ -1,8 +1,16 @@
 unworkableData :=
     [{
+        name: "hwinfo",
+        data: ["HWiNFO64"]
+    }, {
         name: "google",
         data: [
             "Google"
+        ]
+    }, {
+        name: "adblock",
+        data: [
+            "uBlock Origin"
         ]
     }, {
         name: "postman",
@@ -21,8 +29,11 @@ unworkableData :=
             name: "ios shortcuts",
             data: ["iOS Shortcuts"]
         }, {
-            name: "swiftui",
-            data: ["SwiftUI"]
+            name: "ios dev",
+            data: [
+                "Swift",
+                "SwiftUI"
+            ]
         }, {
             name: "ahk",
             data: ["AHK"]
