@@ -12,25 +12,24 @@ iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ic
 TraySetIcon iconPath
 
 
-hooks := { hook1: "", hook2: "" }
+hooks := {
+    hook1: "", hook2: "" }
 
 loadPrevious()
 loadHooks()
 
 activateTopic(topicName) {
-    if WinActive(topicName) {
-        WinMinimize()
-    } else {
-        try {
-            WinActivate(topicName)
-        } catch {
-            if topicName == hooks.hook1 || topicName == hooks.hook2
-                MsgBox topicName "  [HOOKED]", , "T2"
-            else
-                MsgBox topicName, , "T2"
 
-        }
+    try {
+        WinActivate(topicName)
+    } catch {
+        if topicName == hooks.hook1 || topicName == hooks.hook2
+            MsgBox topicName "  [HOOKED]", , "T2"
+        else
+            MsgBox topicName, , "T2"
+
     }
+
 }
 
 savePrevious(category, topic) {
@@ -84,8 +83,11 @@ hook(prevTopic) {
     }
 }
 
+longHooks := []
+
 NumpadEnter:: {
     global prevCategory, prevTopic
+    loadPrevious()
     ; FUCKING HELL
     if hooks.hook1 && prevTopic != hooks.hook1 {
         activateTopic(hooks.hook1)
@@ -96,7 +98,19 @@ NumpadEnter:: {
         prevTopic := hooks.hook2
         return
     }
-    loadPrevious()
+
+    for index, longHook in longHooks {
+        longHook.timer -= 1
+    }
+    if longHooks.Length() > 0 && longHooks[1].timer <= 0 {
+        expiredLongHook := longHooks.RemoveAt(1)
+        prevTopic := expiredLongHook.topic
+        prevCategory := expiredLongHook.category
+        activateTopic(expiredLongHook.topic)
+        return
+    }
+
+
 outer:
     while (true) {
         rand := Random(1, workableData.weights[workableData.len])
@@ -125,7 +139,7 @@ outer:
 
 prevFocus := IniRead("data.ini", "previous", "focus")
 
-NumpadPgdn:: activateTopic(prevTopic)
+NumpadRight:: activateTopic(prevTopic)
 NumpadIns:: {
     ; shit
     prevFocus := IniRead("data.ini", "previous", "focus")
@@ -142,3 +156,12 @@ NumpadIns:: {
 }
 
 NumpadDel:: hook(prevTopic)
+
+longHook(category, topic) {
+    return longHook := { category: category, topic: topic, timer: 5 }
+}
+
+NumpadPgdn:: {
+    longHook(prevCategory, prevTopic)
+    MsgBox "`"" prevTopic "`" long hooked", , "T2"
+}

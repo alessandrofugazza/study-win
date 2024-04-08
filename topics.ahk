@@ -109,7 +109,7 @@ getWeights(arr) {
     totalWeight := 0
     weights := []
     for index, value in arr {
-        weight := 1.2 ** (index)
+        weight := 1.2 ** index
         totalWeight += weight
         weights.Push(totalWeight)
     }
