@@ -186,3 +186,19 @@ NumpadPgdn:: {
     longHook(prevCategory, prevTopic)
     MsgBox "`"" prevTopic "`" long hooked", , "T2"
 }
+
+NumpadMult:: {
+    choice := InputBox("1. Print hooks`n2. Print long hooks", , "w100 h200")
+    choice := choice.Value
+    if choice == "1"
+        MsgBox "Hook 1:`t" hooks.hook1.topic "`nHook 2:`t" hooks.hook2.topic
+    else if choice == "2" {
+        msg := ""
+        for longHook in longHooks {
+            msg += longHook.topic . "`n"
+        }
+        MsgBox msg
+    }
+    else
+        MsgBox "idiot"
+}
