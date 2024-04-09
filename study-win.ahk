@@ -11,6 +11,22 @@ A_IconTip := "Study"
 iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon iconPath
 
+pComputerHardware := "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
+pITS := "C:\Users\aless\Desktop\SQL.PDF"
+
+NumpadIns:: {
+    ; shit
+    prevFocus := IniRead("data.ini", "previous", "focus")
+    if prevFocus == "ICDL" {
+        run pITS
+        IniWrite "ITS", "data.ini", "previous", "focus"
+    }
+    else {
+        WinActivate("ICDL")
+        IniWrite "ICDL", "data.ini", "previous", "focus"
+
+    }
+}
 
 hooks := {
     hook1: { category: "", topic: "" },
@@ -23,6 +39,8 @@ loadHooks()
 activateTopic(topicName) {
     if WinExist(topicName)
         WinActivate(topicName)
+    else if topicName == "HWiNFO"
+        run pComputerHardware
     if topicName == hooks.hook1.topic || topicName == hooks.hook2.topic
         MsgBox topicName "  [HOOKED]", , "T2"
     else
@@ -158,20 +176,7 @@ outer:
 prevFocus := IniRead("data.ini", "previous", "focus")
 
 NumpadRight:: activateTopic(prevTopic)
-NumpadIns:: {
-    ; shit
-    prevFocus := IniRead("data.ini", "previous", "focus")
-    if prevFocus == "ICDL" {
-        WinActivate("SQL.PDF - Adobe Acrobat Reader (64-bit)")
-        IniWrite "SQL.PDF - Adobe Acrobat Reader (64-bit)", "data.ini", "previous", "focus"
 
-    }
-    else {
-        WinActivate("ICDL")
-        IniWrite "ICDL", "data.ini", "previous", "focus"
-
-    }
-}
 
 NumpadDel:: hook()
 

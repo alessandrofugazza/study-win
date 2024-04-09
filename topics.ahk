@@ -1,7 +1,7 @@
 unworkableData :=
     [{
-        name: "hwinfo",
-        data: ["HWiNFO64"]
+        name: "computer hardware",
+        data: ["HWiNFO"]
     }, {
         name: "google",
         data: [
