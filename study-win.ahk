@@ -36,15 +36,13 @@ hooks := {
 loadPrevious()
 loadHooks()
 
-activateTopic(topicName) {
+activateTopic(topicName, addedStr := "") {
     if WinExist(topicName)
         WinActivate(topicName)
     else if topicName == "HWiNFO"
         run pComputerHardware
-    if topicName == hooks.hook1.topic || topicName == hooks.hook2.topic
-        MsgBox topicName "  [HOOKED]", , "T2"
-    else
-        MsgBox topicName, , "T2"
+    msg := addedStr ? topicName . "  " . addedStr : topicName
+    MsgBox msg, , "T2"
 }
 
 savePrevious(topic, category) {
@@ -120,13 +118,13 @@ NumpadEnter:: {
     if hooks.hook1.topic != "" && prevTopic != hooks.hook1.topic {
         ; MsgBox(prevTopic)
         ; MsgBox(hooks.hook1.topic)
-        activateTopic(hooks.hook1.topic)
+        activateTopic(hooks.hook1.topic, "[HOOKED]")
         savePrevious(hooks.hook1.topic, hooks.hook1.category)
         ; prevTopic := hooks.hook1.topic
         ; prevCategory := hooks.hook1.category
         return
     } else if hooks.hook2.topic != "" && prevTopic != hooks.hook2.topic {
-        activateTopic(hooks.hook2.topic)
+        activateTopic(hooks.hook2.topic, "[HOOKED]")
         savePrevious(hooks.hook2.topic, hooks.hook2.category)
         ; prevTopic := hooks.hook2.topic
         ; prevCategory := hooks.hook2.category
@@ -141,7 +139,7 @@ NumpadEnter:: {
         expiredLongHook := longHooks.RemoveAt(1)
         prevTopic := expiredLongHook.topic
         prevCategory := expiredLongHook.category
-        activateTopic(expiredLongHook.topic)
+        activateTopic(expiredLongHook.topic, "[LONG HOOKED]")
 
         return
     }
