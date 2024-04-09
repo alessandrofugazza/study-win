@@ -11,42 +11,58 @@ A_IconTip := "Study"
 iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon iconPath
 
+pComputerHardware := "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
+pITS := "C:\Users\aless\Desktop\SQL.PDF"
 
-hooks := { hook1: "", hook2: "" }
+NumpadIns:: {
+    ; shit
+    prevFocus := IniRead("data.ini", "previous", "focus")
+    if prevFocus == "ICDL" {
+        run pITS
+        IniWrite "ITS", "data.ini", "previous", "focus"
+    }
+    else {
+        WinActivate("ICDL")
+        IniWrite "ICDL", "data.ini", "previous", "focus"
+
+    }
+}
+
+hooks := {
+    hook1: { category: "", topic: "" },
+    hook2: { category: "", topic: "" }
+}
 
 loadPrevious()
 loadHooks()
 
 activateTopic(topicName) {
-    if WinActive(topicName) {
-        WinMinimize()
-    } else {
-        try {
-            WinActivate(topicName)
-        } catch {
-            if topicName == hooks.hook1 || topicName == hooks.hook2
-                MsgBox topicName "  [HOOKED]", , "T2"
-            else
-                MsgBox topicName, , "T2"
-
-        }
-    }
+    if WinExist(topicName)
+        WinActivate(topicName)
+    else if topicName == "HWiNFO"
+        run pComputerHardware
+    if topicName == hooks.hook1.topic || topicName == hooks.hook2.topic
+        MsgBox topicName "  [HOOKED]", , "T2"
+    else
+        MsgBox topicName, , "T2"
 }
 
-savePrevious(category, topic) {
-    IniWrite category, "data.ini", "previous", "category"
+savePrevious(topic, category) {
     IniWrite topic, "data.ini", "previous", "topic"
+    IniWrite category, "data.ini", "previous", "category"
 }
 
-saveHooks() {
-    IniWrite hooks.hook1, "data.ini", "hook1", "topic"
-    IniWrite hooks.hook2, "data.ini", "hook2", "topic"
+saveHooks(hook, topic, category) {
+    IniWrite category, "data.ini", hook, "category"
+    IniWrite topic, "data.ini", hook, "topic"
 }
 
 loadHooks() {
     global hooks
-    hooks.hook1 := IniRead("data.ini", "hook1", "topic")
-    hooks.hook2 := IniRead("data.ini", "hook2", "topic")
+    hooks.hook1.category := IniRead("data.ini", "hook1", "category")
+    hooks.hook1.topic := IniRead("data.ini", "hook1", "topic")
+    hooks.hook2.category := IniRead("data.ini", "hook2", "category")
+    hooks.hook2.topic := IniRead("data.ini", "hook2", "topic")
 }
 
 loadPrevious() {
@@ -56,47 +72,81 @@ loadPrevious() {
 }
 
 ; FUCKING HELL
-hook(prevTopic) {
+hook() {
     global hooks
-    if prevTopic == hooks.hook1 {
-        hooks.hook1 := ""
+    loadPrevious()
+    if prevTopic == hooks.hook1.topic {
+        hooks.hook1.topic := ""
+        hooks.hook1.category := ""
+        saveHooks("hook1", "", "")
         MsgBox "`"" prevTopic "`" dehooked.", , "T2"
-        saveHooks()
         return
-    } else if prevTopic == hooks.hook2 {
-        hooks.hook2 := ""
+    } else if prevTopic == hooks.hook2.topic {
+        hooks.hook2.topic := ""
+        hooks.hook2.category := ""
+        saveHooks("hook2", "", "")
         MsgBox "`"" prevTopic "`" dehooked.", , "T2"
-        saveHooks()
         return
     }
-    if hooks.hook1 != "" {
-        if hooks.hook2 != "" {
+    if hooks.hook1.topic != "" {
+        if hooks.hook2.topic != "" {
             MsgBox "no more hooks available bitch"
         } else {
-            hooks.hook2 := prevTopic
-            saveHooks()
+            hooks.hook2.topic := prevTopic
+            hooks.hook2.category := prevCategory
+            saveHooks("hook2", prevTopic, prevCategory)
             MsgBox "`"" prevTopic "`" hooked", , "T2"
         }
     } else {
-        hooks.hook1 := prevTopic
-        saveHooks()
+        hooks.hook1.topic := prevTopic
+        hooks.hook1.category := prevCategory
+        saveHooks("hook1", prevTopic, prevCategory)
         MsgBox "`"" prevTopic "`" hooked", , "T2"
     }
 }
 
+longHooks := []
+
+NumpadClear:: {
+    MsgBox prevTopic
+    MsgBox hooks.hook1.topic
+}
+
 NumpadEnter:: {
     global prevCategory, prevTopic
+    loadPrevious()
+    loadHooks()
     ; FUCKING HELL
-    if hooks.hook1 && prevTopic != hooks.hook1 {
-        activateTopic(hooks.hook1)
-        prevTopic := hooks.hook1
+    if hooks.hook1.topic != "" && prevTopic != hooks.hook1.topic {
+        ; MsgBox(prevTopic)
+        ; MsgBox(hooks.hook1.topic)
+        activateTopic(hooks.hook1.topic)
+        savePrevious(hooks.hook1.topic, hooks.hook1.category)
+        ; prevTopic := hooks.hook1.topic
+        ; prevCategory := hooks.hook1.category
         return
-    } else if hooks.hook2 && prevTopic != hooks.hook2 {
-        activateTopic(hooks.hook2)
-        prevTopic := hooks.hook2
+    } else if hooks.hook2.topic != "" && prevTopic != hooks.hook2.topic {
+        activateTopic(hooks.hook2.topic)
+        savePrevious(hooks.hook2.topic, hooks.hook2.category)
+        ; prevTopic := hooks.hook2.topic
+        ; prevCategory := hooks.hook2.category
+
         return
     }
-    loadPrevious()
+
+    for index, longHook in longHooks {
+        longHook.timer -= 1
+    }
+    if longHooks.Length > 0 && longHooks[1].timer <= 0 {
+        expiredLongHook := longHooks.RemoveAt(1)
+        prevTopic := expiredLongHook.topic
+        prevCategory := expiredLongHook.category
+        activateTopic(expiredLongHook.topic)
+
+        return
+    }
+
+
 outer:
     while (true) {
         rand := Random(1, workableData.weights[workableData.len])
@@ -112,7 +162,7 @@ outer:
                         prevCategory := randomCategory.name
                         prevTopic := randomTopic
                         activateTopic(randomTopic)
-                        savePrevious(randomCategory.name, randomTopic)
+                        savePrevious(randomTopic, randomCategory.name)
                         break outer
                     }
                 }
@@ -125,20 +175,16 @@ outer:
 
 prevFocus := IniRead("data.ini", "previous", "focus")
 
-NumpadPgdn:: activateTopic(prevTopic)
-NumpadIns:: {
-    ; shit
-    prevFocus := IniRead("data.ini", "previous", "focus")
-    if prevFocus == "ICDL" {
-        WinActivate("SQL.PDF - Adobe Acrobat Reader (64-bit)")
-        IniWrite "SQL.PDF - Adobe Acrobat Reader (64-bit)", "data.ini", "previous", "focus"
+NumpadRight:: activateTopic(prevTopic)
 
-    }
-    else {
-        WinActivate("ICDL")
-        IniWrite "ICDL", "data.ini", "previous", "focus"
 
-    }
+NumpadDel:: hook()
+
+longHook(category, topic) {
+    return longHook := { category: category, topic: topic, timer: 5 }
 }
 
-NumpadDel:: hook(prevTopic)
+NumpadPgdn:: {
+    longHook(prevCategory, prevTopic)
+    MsgBox "`"" prevTopic "`" long hooked", , "T2"
+}
