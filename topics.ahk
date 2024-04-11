@@ -1,7 +1,8 @@
 unworkableData :=
     [{
         name: "computer hardware",
-        data: ["HWiNFO"]
+        data: ["HWiNFO"],
+        customPaths: { hwinfo: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk" }
     }, {
         name: "google",
         data: [

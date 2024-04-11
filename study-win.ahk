@@ -11,126 +11,133 @@ A_IconTip := "Study"
 iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon iconPath
 
-pComputerHardware := "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
-pITS := ""
-
-NumpadIns:: {
-    ; shit
-    prevFocus := IniRead("data.ini", "previous", "focus")
-    if prevFocus == "ICDL" {
-        if pITS
-            run pITS
-        else
-            WinActivate("ITS")
-        IniWrite "ITS", "data.ini", "previous", "focus"
-    }
-    else {
-        WinActivate("ICDL")
-        IniWrite "ICDL", "data.ini", "previous", "focus"
-    }
-}
+focusI := { topic: "ICDL", category: "office", customPath: "" }
+focusII := { topic: "ITS", category: "its", customPath: "" }
 
 hooks := {
-    hook1: { category: "", topic: "" },
-    hook2: { category: "", topic: "" }
-}
-
-loadPrevious()
-loadHooks()
-
-activateTopic(topicName, addedStr := "") {
-    if WinExist(topicName)
-        WinActivate(topicName)
-    else if topicName == "HWiNFO"
-        run pComputerHardware
-    msg := addedStr ? topicName . "  " . addedStr : topicName
-    MsgBox msg, , "T2"
-}
-
-savePrevious(topic, category) {
-    IniWrite topic, "data.ini", "previous", "topic"
-    IniWrite category, "data.ini", "previous", "category"
-}
-
-saveHooks(hook, topic, category) {
-    IniWrite category, "data.ini", hook, "category"
-    IniWrite topic, "data.ini", hook, "topic"
-}
-
-loadHooks() {
-    global hooks
-    hooks.hook1.category := IniRead("data.ini", "hook1", "category")
-    hooks.hook1.topic := IniRead("data.ini", "hook1", "topic")
-    hooks.hook2.category := IniRead("data.ini", "hook2", "category")
-    hooks.hook2.topic := IniRead("data.ini", "hook2", "topic")
-}
-
-loadPrevious() {
-    global prevCategory, prevTopic
-    prevCategory := IniRead("data.ini", "previous", "category")
-    prevTopic := IniRead("data.ini", "previous", "topic")
-}
-
-; FUCKING HELL
-hook() {
-    global hooks
-    loadPrevious()
-    if prevTopic == hooks.hook1.topic {
-        hooks.hook1.topic := ""
-        hooks.hook1.category := ""
-        saveHooks("hook1", "", "")
-        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
-        return
-    } else if prevTopic == hooks.hook2.topic {
-        hooks.hook2.topic := ""
-        hooks.hook2.category := ""
-        saveHooks("hook2", "", "")
-        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
-        return
-    }
-    if hooks.hook1.topic != "" {
-        if hooks.hook2.topic != "" {
-            MsgBox "no more hooks available bitch"
-        } else {
-            hooks.hook2.topic := prevTopic
-            hooks.hook2.category := prevCategory
-            saveHooks("hook2", prevTopic, prevCategory)
-            MsgBox "`"" prevTopic "`" hooked", , "T2"
-        }
-    } else {
-        hooks.hook1.topic := prevTopic
-        hooks.hook1.category := prevCategory
-        saveHooks("hook1", prevTopic, prevCategory)
-        MsgBox "`"" prevTopic "`" hooked", , "T2"
-    }
+    hookI: { category: "", topic: "" },
+    hookII: { category: "", topic: "" }
 }
 
 longHooks := []
 
-NumpadClear:: {
-    MsgBox prevTopic
-    MsgBox hooks.hook1.topic
+
+NumpadIns:: {
+    if prevTopic == focusI.topic {
+        activateTopic(focusII.topic, focusII.category, , focusII.customPath)
+    }
+    else {
+        activateTopic(focusI.topic, focusI.category, , focusI.customPath)
+    }
+}
+
+activateTopic(topic, category, addedStr := "", customPath := "") {
+    global prevTopic, prevCategory
+    prevTopic := topic
+    prevCategory := category
+    if customPath
+        run customPath
+    else if WinExist(topic)
+        WinActivate(topic)
+    msg := addedStr ? topic . "  " . addedStr : topic
+    MsgBox msg, , "T2"
+}
+
+save() {
+    IniWrite prevTopic, "data.ini", "previous", "topic"
+    IniWrite prevCategory, "data.ini", "previous", "category"
+    IniWrite hooks.hookI.category, "data.ini", "hookI", "category"
+    IniWrite hooks.hookI.topic, "data.ini", "hookI", "topic"
+    IniWrite hooks.hookII.category, "data.ini", "hookII", "category"
+    IniWrite hooks.hookII.topic, "data.ini", "hookII", "topic"
+
+    serializedData := ""
+    for _, obj in longHooks
+    {
+        serializedData .= obj.category . "|" . obj.topic . "|" . obj.timer . "`n"
+    }
+
+    FileDelete "data.txt"
+    FileAppend serializedData, "data.txt"
+
+}
+
+load() {
+    global prevTopic, prevCategory, hooks, longHooks
+    prevCategory := IniRead("data.ini", "previous", "category")
+    prevTopic := IniRead("data.ini", "previous", "topic")
+    hooks.hookI.category := IniRead("data.ini", "hookI", "category")
+    hooks.hookI.topic := IniRead("data.ini", "hookI", "topic")
+    hooks.hookII.category := IniRead("data.ini", "hookII", "category")
+    hooks.hookII.topic := IniRead("data.ini", "hookII", "topic")
+
+    ; Open the file for reading
+    file := FileOpen("data.txt", "r")
+
+    ; Check if the file was successfully opened
+    if !IsObject(file)
+    {
+        MsgBox "Failed to open file."
+        return
+    }
+
+    ; Read the entire content of the file
+    fileContent := file.Read()
+
+    ; Close the file
+    file.Close()
+
+    ; Split the file content into lines
+    lines := StrSplit(fileContent, "`n", "`r")
+    longHooks := []
+
+    ; Iterate over each line to deserialize it back into objects
+    for each, line in lines
+    {
+        if (line = "")  ; Skip empty lines
+            continue
+        parts := StrSplit(line, "|")
+        longHooks.Push({ category: parts[1], topic: parts[2], timer: parts[3] })
+    }
+
+}
+
+; FUCKING HELL
+hookTopic() {
+    global hooks
+    if prevTopic == hooks.hookI.topic {
+        hooks.hookI.topic := ""
+        hooks.hookI.category := ""
+        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
+        return
+    } else if prevTopic == hooks.hookII.topic {
+        hooks.hookII.topic := ""
+        hooks.hookII.category := ""
+        MsgBox "`"" prevTopic "`" dehooked.", , "T2"
+        return
+    }
+    if hooks.hookI.topic != "" {
+        if hooks.hookII.topic != "" {
+            MsgBox "no more hooks available bitch"
+        } else {
+            hooks.hookII.topic := prevTopic
+            hooks.hookII.category := prevCategory
+            MsgBox "`"" prevTopic "`" hooked", , "T2"
+        }
+    } else {
+        hooks.hookI.topic := prevTopic
+        hooks.hookI.category := prevCategory
+        MsgBox "`"" prevTopic "`" hooked", , "T2"
+    }
 }
 
 NumpadEnter:: {
-    global prevCategory, prevTopic
-    loadPrevious()
-    loadHooks()
     ; FUCKING HELL
-    if hooks.hook1.topic != "" && prevTopic != hooks.hook1.topic {
-        ; MsgBox(prevTopic)
-        ; MsgBox(hooks.hook1.topic)
-        activateTopic(hooks.hook1.topic, "[HOOKED]")
-        savePrevious(hooks.hook1.topic, hooks.hook1.category)
-        ; prevTopic := hooks.hook1.topic
-        ; prevCategory := hooks.hook1.category
+    if hooks.hookI.topic != "" && prevTopic != hooks.hookI.topic {
+        activateTopic(hooks.hookI.topic, hooks.hookI.category, "[HOOKED]")
         return
-    } else if hooks.hook2.topic != "" && prevTopic != hooks.hook2.topic {
-        activateTopic(hooks.hook2.topic, "[HOOKED]")
-        savePrevious(hooks.hook2.topic, hooks.hook2.category)
-        ; prevTopic := hooks.hook2.topic
-        ; prevCategory := hooks.hook2.category
-
+    } else if hooks.hookII.topic != "" && prevTopic != hooks.hookII.topic {
+        activateTopic(hooks.hookII.topic, hooks.hookII.category, "[HOOKED]")
         return
     }
 
@@ -139,10 +146,7 @@ NumpadEnter:: {
     }
     if longHooks.Length > 0 && longHooks[1].timer <= 0 {
         expiredLongHook := longHooks.RemoveAt(1)
-        prevTopic := expiredLongHook.topic
-        prevCategory := expiredLongHook.category
-        activateTopic(expiredLongHook.topic, "[LONG HOOKED]")
-
+        activateTopic(expiredLongHook.topic, expiredLongHook.category, "[LONG HOOKED]")
         return
     }
 
@@ -163,10 +167,7 @@ outer:
                             if randomTopic == longHook.topic
                                 continue outer
                         }
-                        prevCategory := randomCategory.name
-                        prevTopic := randomTopic
-                        activateTopic(randomTopic)
-                        savePrevious(randomTopic, randomCategory.name)
+                        activateTopic(randomTopic, randomCategory.name)
                         break outer
                     }
                 }
@@ -177,36 +178,48 @@ outer:
 
 }
 
-prevFocus := IniRead("data.ini", "previous", "focus")
+NumpadRight:: activateTopic(prevTopic, prevCategory)
 
-NumpadRight:: activateTopic(prevTopic)
+NumpadDel:: hookTopic()
 
-
-NumpadDel:: hook()
-
-longHook(category, topic) {
-    global longHooks
-    longHooks.Push({ category: category, topic: topic, timer: 5 })
+longHookTopic() {
+    global hooks, longHooks
+    if prevTopic == hooks.hookI.topic {
+        hooks.hookI.topic := ""
+        hooks.hookI.category := ""
+    } else if prevTopic == hooks.hookII.topic {
+        hooks.hookII.topic := ""
+        hooks.hookII.category := ""
+    }
+    longHooks.Push({ category: prevCategory, topic: prevTopic, timer: 5 })
 }
 
 NumpadPgdn:: {
-    longHook(prevCategory, prevTopic)
+    longHookTopic()
     MsgBox "`"" prevTopic "`" long hooked", , "T2"
 }
 
 NumpadMult:: {
-    choice := InputBox("1. Print hooks`n2. Print long hooks", , "w100 h200")
+    choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload", , "w100 h200")
     choice := choice.Value
     if choice == "1" {
-        MsgBox "Hook 1:`t`t" hooks.hook1.topic "`nHook 2:`t`t" hooks.hook2.topic "`n`nCurrent topic:`t" prevTopic
-    }
-    else if choice == "2" {
+        MsgBox "Hook I:`t`t" hooks.hookI.topic "`nHook II:`t`t" hooks.hookII.topic "`n`nCurrent topic:`t" prevTopic
+    } else if choice == "2" {
         msg := ""
         for longHook in longHooks {
             msg := msg . longHook.topic . "`t" . longHook.timer "`n"
         }
         MsgBox msg
+    } else if choice == "3" {
+        save()
+        MsgBox "Saved."
+    } else if choice == "4" {
+        save()
+        MsgBox "Reloaded."
+        Reload()
     }
     else
         MsgBox "idiot"
 }
+
+load()
