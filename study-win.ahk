@@ -12,19 +12,21 @@ iconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ic
 TraySetIcon iconPath
 
 pComputerHardware := "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
-pITS := "C:\Users\aless\Desktop\SQL.PDF"
+pITS := ""
 
 NumpadIns:: {
     ; shit
     prevFocus := IniRead("data.ini", "previous", "focus")
     if prevFocus == "ICDL" {
-        run pITS
+        if pITS
+            run pITS
+        else
+            WinActivate("ITS")
         IniWrite "ITS", "data.ini", "previous", "focus"
     }
     else {
         WinActivate("ICDL")
         IniWrite "ICDL", "data.ini", "previous", "focus"
-
     }
 }
 
@@ -157,6 +159,10 @@ outer:
                 for index2, cumulativeWeight2 in randomCategory.weights {
                     if (rand2 <= cumulativeWeight2) {
                         randomTopic := randomCategory.data[index2]
+                        for longHook in longHooks {
+                            if randomTopic == longHook.topic
+                                continue outer
+                        }
                         prevCategory := randomCategory.name
                         prevTopic := randomTopic
                         activateTopic(randomTopic)
@@ -179,7 +185,8 @@ NumpadRight:: activateTopic(prevTopic)
 NumpadDel:: hook()
 
 longHook(category, topic) {
-    return longHook := { category: category, topic: topic, timer: 5 }
+    global longHooks
+    longHooks.Push({ category: category, topic: topic, timer: 5 })
 }
 
 NumpadPgdn:: {
@@ -190,12 +197,13 @@ NumpadPgdn:: {
 NumpadMult:: {
     choice := InputBox("1. Print hooks`n2. Print long hooks", , "w100 h200")
     choice := choice.Value
-    if choice == "1"
-        MsgBox "Hook 1:`t" hooks.hook1.topic "`nHook 2:`t" hooks.hook2.topic
+    if choice == "1" {
+        MsgBox "Hook 1:`t`t" hooks.hook1.topic "`nHook 2:`t`t" hooks.hook2.topic "`n`nCurrent topic:`t" prevTopic
+    }
     else if choice == "2" {
         msg := ""
         for longHook in longHooks {
-            msg += longHook.topic . "`n"
+            msg := msg . longHook.topic . "`t" . longHook.timer "`n"
         }
         MsgBox msg
     }
