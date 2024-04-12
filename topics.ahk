@@ -2,7 +2,9 @@ unworkableData :=
     [{
         name: "computer hardware",
         data: ["HWiNFO"],
-        customPaths: { hwinfo: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk" }
+        customPaths: {
+            HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
+        }
     }, {
         name: "google",
         data: [
@@ -39,7 +41,10 @@ unworkableData :=
         ]
     }, {
         name: "japanese",
-        data: ["Japanese"]
+        data: ["Japanese"],
+        customPaths: {
+            Japanese: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
+        }
     }, {
         name: "german",
         data: ["German"]

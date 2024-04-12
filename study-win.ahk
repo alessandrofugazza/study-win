@@ -25,9 +25,12 @@ LongHooks := []
 NumpadIns:: {
     if PrevTopic == FocusI.Topic {
         ActivateTopic(FocusII.Topic, FocusII.Category, , FocusII.CustomPath)
-    }
-    else {
+    } else if PrevTopic == FocusII.Topic {
         ActivateTopic(FocusI.Topic, FocusI.Category, , FocusI.CustomPath)
+    } else if Random(0, 1) {
+        ActivateTopic(FocusI.Topic, FocusI.Category, , FocusI.CustomPath)
+    } else {
+        ActivateTopic(FocusII.Topic, FocusII.Category, , FocusII.CustomPath)
     }
 }
 
@@ -40,7 +43,7 @@ ActivateTopic(Topic, Category, AddedStr := "", CustomPath := "") {
     else if WinExist(Topic)
         WinActivate(Topic)
     Msg := AddedStr ? Topic . "  " . AddedStr : Topic
-    MsgBox Msg, , "T2"
+    ; MsgBox Msg, , "T2"
 }
 
 Save() {
@@ -134,10 +137,12 @@ HookTopic() {
 NumpadEnter:: {
     ; FUCKING HELL
     if Hooks.HookI.Topic != "" && PrevTopic != Hooks.HookI.Topic {
-        ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
+        ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category)
+        ; ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
         return
     } else if Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookII.Topic {
-        ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
+        ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category)
+        ; ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
         return
     }
 
@@ -146,28 +151,36 @@ NumpadEnter:: {
     }
     if LongHooks.Length > 0 && LongHooks[1].Timer <= 0 {
         ExpiredLongHook := LongHooks.RemoveAt(1)
-        ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
+        ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category)
+        ; ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
         return
     }
 
 
 outer:
     while (true) {
-        rand := Random(1, workableData.weights[workableData.len])
-        for Index, cumulativeWeight in workableData.weights {
-            if (rand <= cumulativeWeight) {
-                randomCategory := workableData.data[Index]
-                if randomCategory.name == PrevCategory
+        Rand := Random(1, workableData.weights[workableData.len])
+        for Index, CumulativeWeight in workableData.weights {
+            if (Rand <= cumulativeWeight) {
+                RandomCategory := workableData.data[Index]
+                if RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category {
+                    MsgBox "fuck"
+                }
+                if RandomCategory.name == PrevCategory || RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category
                     continue outer
-                rand2 := Random(1, randomCategory.weights[randomCategory.len])
-                for Index2, cumulativeWeight2 in randomCategory.weights {
+                for LongHook in LongHooks {
+                    if RandomCategory.name == LongHook.Category
+                        continue outer
+                }
+                rand2 := Random(1, RandomCategory.weights[RandomCategory.len])
+                for Index2, cumulativeWeight2 in RandomCategory.weights {
                     if (rand2 <= cumulativeWeight2) {
-                        randomTopic := randomCategory.data[Index2]
+                        randomTopic := RandomCategory.data[Index2]
                         for LongHook in LongHooks {
                             if randomTopic == LongHook.Topic
                                 continue outer
                         }
-                        ActivateTopic(randomTopic, randomCategory.name)
+                        ActivateTopic(randomTopic, RandomCategory.name)
                         break outer
                     }
                 }
