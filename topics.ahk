@@ -18,91 +18,68 @@ unworkableData :=
         data: [
             "Postman"
         ]
-    },
-        ; {
-        ;     name: "fastweb",
-        ;     data: ["Fastweb"]
-        ; },
-        {
-            name: "english",
-            data: ["English"]
-        }, {
-            name: "ios shortcuts",
-            data: ["iOS Shortcuts"]
-        }, {
-            name: "ios dev",
-            data: [
-                "Swift",
-                "SwiftUI"
-            ]
-        }, {
-            name: "ahk",
-            data: ["AHK"]
-        }, {
-            name: "webdev",
-            data: [
-                "HTML",
-                "CSS",
-                "JavaScript",
-                "TypeScript",
-                "Java",
-                "Spring",
-                "React",
-                "React Bootstrap"
-                "Bootstrap",
-            ]
-        }, {
-            name: "japanese",
-            data: ["Japanese"]
-        }, {
-            name: "german",
-            data: ["German"]
-        }, {
-            name: "devtools",
-            data: [
-                "IntelliJ",
-                "VS Code",
-                "Chrome Devtools"
-            ]
-        },
-        ; {
-        ;     name: "poker",
-        ;     data: ["Poker"]
-        ; },
-        ; {
-        ;     name: "warehouse",
-        ;     data: [
-        ;         "Forklift"
-        ;     ]
-        ; },
-        ; {
-        ;     name: "its",
-        ;     data: [
-        ;         "ITS"
-        ;     ]
-        ; },
-        {
-            name: "icdl",
-            data: [
-                "Computer Essentials",
-                "Online Essentials",
-                "IT Security",
-                "Online Collaboration"
-            ]
-        }, {
-            name: "office",
-            data: [
-                "PowerPoint",
-                "Word",
-                ; "Excel"
-            ]
-        }, {
-            name: "real shit",
-            data: [
-                "Improvement",
-                "Task",
-            ]
-        }
+    }, {
+        name: "english",
+        data: ["English"]
+    }, {
+        name: "ios shortcuts",
+        data: ["iOS Shortcuts"]
+    }, {
+        name: "webdev",
+        data: [
+            "HTML",
+            "CSS",
+            "JavaScript",
+            "TypeScript",
+            "Java",
+            "Spring",
+            "React",
+            "React Bootstrap"
+            "Bootstrap",
+        ]
+    }, {
+        name: "japanese",
+        data: ["Japanese"]
+    }, {
+        name: "german",
+        data: ["German"]
+    }, {
+        name: "ios dev",
+        data: [
+            "Swift",
+            "SwiftUI"
+        ]
+    }, {
+        name: "ahk",
+        data: ["AHK"]
+    }, {
+        name: "devtools",
+        data: [
+            "IntelliJ",
+            "VS Code",
+            "Chrome Devtools"
+        ]
+    }, {
+        name: "icdl",
+        data: [
+            "Computer Essentials",
+            "Online Essentials",
+            "IT Security",
+            "Online Collaboration"
+        ]
+    }, {
+        name: "office",
+        data: [
+            "PowerPoint",
+            "Word",
+        ]
+    }, {
+        name: "real shit",
+        data: [
+            "Improvement",
+            "Task",
+        ]
+    }
     ]
 
 
