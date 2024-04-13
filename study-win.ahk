@@ -9,10 +9,7 @@ A_ScriptName := "Study"
 A_IconTip := "Study"
 
 CustomPaths := {
-    HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
-}
-
-Apps := {
+    HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk",
     Japanese: "ahk_exe Kindle.exe",
     German: "ahk_exe Kindle.exe"
 }
@@ -49,10 +46,12 @@ ActivateTopic(Topic, Category, AddedStr := "") {
     global PrevTopic, PrevCategory
     PrevTopic := Topic
     PrevCategory := Category
-    if CustomPaths.HasProp(Topic)
-        Run CustomPaths.%Topic%
-    else if Apps.HasProp(Topic)
-        WinActivate(Apps.%Topic%)
+    if CustomPaths.HasProp(Topic) {
+        if SubStr(CustomPaths.%Topic%, 1, 3) = "C:\\"
+            Run CustomPaths.%Topic%
+        else
+            WinActivate(CustomPaths.%Topic%)
+    }
     else if WinExist(Topic)
         WinActivate(Topic)
     Msg := AddedStr ? Topic . "  " . AddedStr : Topic
