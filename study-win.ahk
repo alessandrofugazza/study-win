@@ -8,11 +8,20 @@ SetTitleMatchMode 3
 A_ScriptName := "Study"
 A_IconTip := "Study"
 
+CustomPaths := {
+    HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
+}
+
+Apps := {
+    Japanese: "ahk_exe Kindle.exe",
+    German: "ahk_exe Kindle.exe"
+}
+
 IconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon IconPath
 
-FocusI := { Topic: "ICDL", Category: "office", CustomPath: "" }
-FocusII := { Topic: "ITS", Category: "its", CustomPath: "" }
+FocusI := { Topic: "ICDL", Category: "office" }
+FocusII := { Topic: "ITS", Category: "its" }
 
 Hooks := {
     HookI: { Category: "", Topic: "" },
@@ -24,35 +33,37 @@ LongHooks := []
 
 NumpadIns:: {
     if PrevTopic == FocusI.Topic {
-        ActivateTopic(FocusII.Topic, FocusII.Category, , FocusII.CustomPath)
+        ActivateTopic(FocusII.Topic, FocusII.Category)
     } else if PrevTopic == FocusII.Topic {
-        ActivateTopic(FocusI.Topic, FocusI.Category, , FocusI.CustomPath)
+        ActivateTopic(FocusI.Topic, FocusI.Category)
     } else if Random(0, 1) {
-        ActivateTopic(FocusI.Topic, FocusI.Category, , FocusI.CustomPath)
+        ActivateTopic(FocusI.Topic, FocusI.Category)
     } else {
-        ActivateTopic(FocusII.Topic, FocusII.Category, , FocusII.CustomPath)
+        ActivateTopic(FocusII.Topic, FocusII.Category)
     }
 }
 
-ActivateTopic(Topic, Category, AddedStr := "", CustomPath := "") {
+ActivateTopic(Topic, Category, AddedStr := "") {
     global PrevTopic, PrevCategory
     PrevTopic := Topic
     PrevCategory := Category
-    if CustomPath
-        run CustomPath
+    if CustomPaths.HasProp(Topic)
+        Run CustomPaths.%Topic%
+    else if Apps.HasProp(Topic)
+        WinActivate(Apps.%Topic%)
     else if WinExist(Topic)
         WinActivate(Topic)
     Msg := AddedStr ? Topic . "  " . AddedStr : Topic
-    ; MsgBox Msg, , "T2"
+    MsgBox Msg, , "T0.8"
 }
 
 Save() {
-    IniWrite PrevTopic, "data.ini", "previous", "Topic"
-    IniWrite PrevCategory, "data.ini", "previous", "Category"
-    IniWrite Hooks.HookI.Category, "data.ini", "HookI", "Category"
-    IniWrite Hooks.HookI.Topic, "data.ini", "HookI", "Topic"
-    IniWrite Hooks.HookII.Category, "data.ini", "HookII", "Category"
-    IniWrite Hooks.HookII.Topic, "data.ini", "HookII", "Topic"
+    IniWrite PrevTopic, "data.ini", "previous", "topic"
+    IniWrite PrevCategory, "data.ini", "previous", "category"
+    IniWrite Hooks.HookI.Category, "data.ini", "hookI", "category"
+    IniWrite Hooks.HookI.Topic, "data.ini", "hookI", "topic"
+    IniWrite Hooks.HookII.Category, "data.ini", "hookII", "category"
+    IniWrite Hooks.HookII.Topic, "data.ini", "hookII", "topic"
 
     SerializedData := ""
     for _, Obj in LongHooks
@@ -67,12 +78,12 @@ Save() {
 
 Load() {
     global PrevTopic, PrevCategory, Hooks, LongHooks
-    PrevCategory := IniRead("data.ini", "previous", "Category")
-    PrevTopic := IniRead("data.ini", "previous", "Topic")
-    Hooks.HookI.Category := IniRead("data.ini", "HookI", "Category")
-    Hooks.HookI.Topic := IniRead("data.ini", "HookI", "Topic")
-    Hooks.HookII.Category := IniRead("data.ini", "HookII", "Category")
-    Hooks.HookII.Topic := IniRead("data.ini", "HookII", "Topic")
+    PrevCategory := IniRead("data.ini", "previous", "category")
+    PrevTopic := IniRead("data.ini", "previous", "topic")
+    Hooks.HookI.Category := IniRead("data.ini", "hookI", "category")
+    Hooks.HookI.Topic := IniRead("data.ini", "hookI", "topic")
+    Hooks.HookII.Category := IniRead("data.ini", "hookII", "category")
+    Hooks.HookII.Topic := IniRead("data.ini", "hookII", "topic")
 
     ; Open the File for reading
     File := FileOpen("data.txt", "r")
@@ -105,18 +116,17 @@ Load() {
 
 }
 
-; FUCKING HELL
 HookTopic() {
     global Hooks
     if PrevTopic == Hooks.HookI.Topic {
         Hooks.HookI.Topic := ""
         Hooks.HookI.Category := ""
-        MsgBox "`"" PrevTopic "`" dehooked.", , "T2"
+        MsgBox "`"" PrevTopic "`" dehooked.", , "T0.8"
         return
     } else if PrevTopic == Hooks.HookII.Topic {
         Hooks.HookII.Topic := ""
         Hooks.HookII.Category := ""
-        MsgBox "`"" PrevTopic "`" dehooked.", , "T2"
+        MsgBox "`"" PrevTopic "`" dehooked.", , "T0.8"
         return
     }
     if Hooks.HookI.Topic != "" {
@@ -125,24 +135,23 @@ HookTopic() {
         } else {
             Hooks.HookII.Topic := PrevTopic
             Hooks.HookII.Category := PrevCategory
-            MsgBox "`"" PrevTopic "`" hooked", , "T2"
+            MsgBox "`"" PrevTopic "`" hooked", , "T0.8"
         }
     } else {
         Hooks.HookI.Topic := PrevTopic
         Hooks.HookI.Category := PrevCategory
-        MsgBox "`"" PrevTopic "`" hooked", , "T2"
+        MsgBox "`"" PrevTopic "`" hooked", , "T0.8"
     }
 }
 
 NumpadEnter:: {
-    ; FUCKING HELL
     if Hooks.HookI.Topic != "" && PrevTopic != Hooks.HookI.Topic {
-        ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category)
-        ; ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
+        ; ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category)
+        ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
         return
     } else if Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookII.Topic {
-        ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category)
-        ; ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
+        ; ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category)
+        ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
         return
     }
 
@@ -151,18 +160,18 @@ NumpadEnter:: {
     }
     if LongHooks.Length > 0 && LongHooks[1].Timer <= 0 {
         ExpiredLongHook := LongHooks.RemoveAt(1)
-        ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category)
-        ; ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
+        ; ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category)
+        ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
         return
     }
 
 
 outer:
     while (true) {
-        Rand := Random(1, workableData.weights[workableData.len])
-        for Index, CumulativeWeight in workableData.weights {
-            if (Rand <= cumulativeWeight) {
-                RandomCategory := workableData.data[Index]
+        Rand := Random(1, WorkableData.Weights[WorkableData.Len])
+        for Index, CumulativeWeight in WorkableData.Weights {
+            if (Rand <= CumulativeWeight) {
+                RandomCategory := WorkableData.data[Index]
                 if RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category {
                     MsgBox "fuck"
                 }
@@ -172,15 +181,15 @@ outer:
                     if RandomCategory.name == LongHook.Category
                         continue outer
                 }
-                rand2 := Random(1, RandomCategory.weights[RandomCategory.len])
-                for Index2, cumulativeWeight2 in RandomCategory.weights {
-                    if (rand2 <= cumulativeWeight2) {
-                        randomTopic := RandomCategory.data[Index2]
+                Rand2 := Random(1, RandomCategory.Weights[RandomCategory.Len])
+                for Index2, CumulativeWeight2 in RandomCategory.Weights {
+                    if (Rand2 <= CumulativeWeight2) {
+                        RandomTopic := RandomCategory.Data[Index2]
                         for LongHook in LongHooks {
-                            if randomTopic == LongHook.Topic
+                            if RandomTopic == LongHook.Topic
                                 continue outer
                         }
-                        ActivateTopic(randomTopic, RandomCategory.name)
+                        ActivateTopic(RandomTopic, RandomCategory.Name)
                         break outer
                     }
                 }
@@ -209,24 +218,24 @@ LongHookTopic() {
 
 NumpadPgdn:: {
     LongHookTopic()
-    MsgBox "`"" PrevTopic "`" long hooked", , "T2"
+    MsgBox "`"" PrevTopic "`" long hooked", , "T0.8"
 }
 
 NumpadSub:: {
-    choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload", , "w100 h200")
-    choice := choice.Value
-    if choice == "1" {
+    Choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload", , "w100 h200")
+    Choice := Choice.Value
+    if Choice == "1" {
         MsgBox "Hook I:`t`t" Hooks.HookI.Topic "`nHook II:`t`t" Hooks.HookII.Topic "`n`nCurrent Topic:`t" PrevTopic
-    } else if choice == "2" {
+    } else if Choice == "2" {
         Msg := ""
         for LongHook in LongHooks {
             Msg := Msg . LongHook.Topic . "`t" . LongHook.Timer "`n"
         }
         MsgBox Msg
-    } else if choice == "3" {
+    } else if Choice == "3" {
         Save()
         MsgBox "Saved."
-    } else if choice == "4" {
+    } else if Choice == "4" {
         Save()
         MsgBox "Reloaded."
         Reload()

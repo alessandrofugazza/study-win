@@ -1,34 +1,31 @@
-unworkableData :=
+UnworkableData :=
     [{
-        name: "computer hardware",
-        data: ["HWiNFO"],
-        customPaths: {
-            HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
-        }
+        Name: "computer hardware",
+        Data: ["HWiNFO"]
     }, {
-        name: "google",
-        data: [
+        Name: "google",
+        Data: [
             "Google"
         ]
     }, {
-        name: "adblock",
-        data: [
+        Name: "adblock",
+        Data: [
             "uBlock Origin"
         ]
     }, {
-        name: "postman",
-        data: [
+        Name: "postman",
+        Data: [
             "Postman"
         ]
     }, {
-        name: "english",
-        data: ["English"]
+        Name: "english",
+        Data: ["English"]
     }, {
-        name: "ios shortcuts",
-        data: ["iOS Shortcuts"]
+        Name: "ios shortcuts",
+        Data: ["iOS Shortcuts"]
     }, {
-        name: "webdev",
-        data: [
+        Name: "webdev",
+        Data: [
             "HTML",
             "CSS",
             "JavaScript",
@@ -40,47 +37,44 @@ unworkableData :=
             "Bootstrap",
         ]
     }, {
-        name: "japanese",
-        data: ["Japanese"],
-        customPaths: {
-            Japanese: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk"
-        }
+        Name: "japanese",
+        Data: ["Japanese"],
     }, {
-        name: "german",
-        data: ["German"]
+        Name: "german",
+        Data: ["German"]
     }, {
-        name: "ios dev",
-        data: [
+        Name: "ios dev",
+        Data: [
             "Swift",
             "SwiftUI"
         ]
     }, {
-        name: "ahk",
-        data: ["AHK"]
+        Name: "ahk",
+        Data: ["AHK"]
     }, {
-        name: "devtools",
-        data: [
+        Name: "devtools",
+        Data: [
             "IntelliJ",
             "VS Code",
             "Chrome Devtools"
         ]
     }, {
-        name: "icdl",
-        data: [
+        Name: "icdl",
+        Data: [
             "Computer Essentials",
             "Online Essentials",
             "IT Security",
             "Online Collaboration"
         ]
     }, {
-        name: "office",
-        data: [
+        Name: "office",
+        Data: [
             "PowerPoint",
             "Word",
         ]
     }, {
-        name: "real shit",
-        data: [
+        Name: "real shit",
+        Data: [
             "Improvement",
             "Task",
         ]
@@ -88,22 +82,22 @@ unworkableData :=
     ]
 
 
-getWeights(arr) {
-    totalWeight := 0
-    weights := []
-    for index, value in arr {
-        weight := 1.2 ** index
-        totalWeight += weight
-        weights.Push(totalWeight)
+GetWeights(arr) {
+    TotalWeight := 0
+    Weights := []
+    for Index, Value in arr {
+        Weight := 1.2 ** Index
+        TotalWeight += Weight
+        Weights.Push(TotalWeight)
     }
-    return weights
+    return Weights
 }
 
 
-workableData := { data: unworkableData, weights: getWeights(unworkableData), len: unworkableData.Length }
+WorkableData := { Data: UnworkableData, Weights: GetWeights(UnworkableData), Len: UnworkableData.Length }
 
-for index, value in workableData.data
+for Index, Value in WorkableData.Data
 {
-    value.len := value.data.Length
-    value.weights := getWeights(value.data)
+    Value.Len := Value.Data.Length
+    Value.Weights := GetWeights(Value.Data)
 }
