@@ -20,6 +20,8 @@ Apps := {
 IconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon IconPath
 
+MsgBoxTimer := "T0.8"
+
 FocusI := { Topic: "ICDL", Category: "office" }
 FocusII := { Topic: "ITS", Category: "its" }
 
@@ -54,7 +56,7 @@ ActivateTopic(Topic, Category, AddedStr := "") {
     else if WinExist(Topic)
         WinActivate(Topic)
     Msg := AddedStr ? Topic . "  " . AddedStr : Topic
-    MsgBox Msg, , "T0.8"
+    MsgBox Msg, , MsgBoxTimer
 }
 
 Save() {
@@ -119,14 +121,16 @@ Load() {
 HookTopic() {
     global Hooks
     if PrevTopic == Hooks.HookI.Topic {
-        Hooks.HookI.Topic := ""
-        Hooks.HookI.Category := ""
-        MsgBox "`"" PrevTopic "`" dehooked.", , "T0.8"
+        Hooks.HookI.Topic := Hooks.HookII.Topic
+        Hooks.HookI.Category := Hooks.HookII.Category
+        Hooks.HookII.Topic := ""
+        Hooks.HookII.Category := ""
+        MsgBox "`"" PrevTopic "`" dehooked.", , MsgBoxTimer
         return
     } else if PrevTopic == Hooks.HookII.Topic {
         Hooks.HookII.Topic := ""
         Hooks.HookII.Category := ""
-        MsgBox "`"" PrevTopic "`" dehooked.", , "T0.8"
+        MsgBox "`"" PrevTopic "`" dehooked.", , MsgBoxTimer
         return
     }
     if Hooks.HookI.Topic != "" {
@@ -135,12 +139,12 @@ HookTopic() {
         } else {
             Hooks.HookII.Topic := PrevTopic
             Hooks.HookII.Category := PrevCategory
-            MsgBox "`"" PrevTopic "`" hooked", , "T0.8"
+            MsgBox "`"" PrevTopic "`" hooked", , MsgBoxTimer
         }
     } else {
         Hooks.HookI.Topic := PrevTopic
         Hooks.HookI.Category := PrevCategory
-        MsgBox "`"" PrevTopic "`" hooked", , "T0.8"
+        MsgBox "`"" PrevTopic "`" hooked", , MsgBoxTimer
     }
 }
 
@@ -218,7 +222,7 @@ LongHookTopic() {
 
 NumpadPgdn:: {
     LongHookTopic()
-    MsgBox "`"" PrevTopic "`" long hooked", , "T0.8"
+    MsgBox "`"" PrevTopic "`" long hooked", , MsgBoxTimer
 }
 
 NumpadSub:: {
