@@ -17,7 +17,7 @@ CustomPaths := {
 IconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
 TraySetIcon IconPath
 
-MsgBoxTimer := "T0.8"
+MsgBoxTimer := "T1"
 
 FocusI := { Topic: "ICDL", Category: "office" }
 FocusII := { Topic: "ITS", Category: "its" }
@@ -148,12 +148,15 @@ HookTopic() {
 }
 
 NumpadEnter:: {
-    if Hooks.HookI.Topic != "" && PrevTopic != Hooks.HookI.Topic {
-        ; ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category)
+    if Hooks.HookI.Topic != "" && Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookI.Topic && PrevTopic != Hooks.HookII.Topic {
+        if Random(0, 1)
+            ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
+        else
+            ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
+    } else if Hooks.HookI.Topic && PrevTopic != Hooks.HookI.Topic {
         ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
         return
-    } else if Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookII.Topic {
-        ; ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category)
+    } else if Hooks.HookII.Topic && PrevTopic != Hooks.HookII.Topic {
         ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
         return
     }
@@ -163,7 +166,6 @@ NumpadEnter:: {
     }
     if LongHooks.Length > 0 && LongHooks[1].Timer <= 0 {
         ExpiredLongHook := LongHooks.RemoveAt(1)
-        ; ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category)
         ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
         return
     }
