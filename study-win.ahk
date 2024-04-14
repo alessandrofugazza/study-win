@@ -42,19 +42,20 @@ NumpadIns:: {
     }
 }
 
-ActivateTopic(Topic, Category, AddedStr := "") {
+ActivateTopic(Topic, Category, AddedStr?) {
     global PrevTopic, PrevCategory
     PrevTopic := Topic
     PrevCategory := Category
     if CustomPaths.HasProp(Topic) {
-        if SubStr(CustomPaths.%Topic%, 1, 3) = "C:\\"
+        if SubStr(CustomPaths.%Topic%, 1, 3) = "C:\"
             Run CustomPaths.%Topic%
-        else
+        else {
             WinActivate(CustomPaths.%Topic%)
+        }
     }
     else if WinExist(Topic)
         WinActivate(Topic)
-    Msg := AddedStr ? Topic . "  " . AddedStr : Topic
+    Msg := IsSet(AddedStr) ? Topic . "  " . AddedStr : Topic
     MsgBox Msg, , MsgBoxTimer
 }
 
@@ -149,10 +150,14 @@ HookTopic() {
 
 NumpadEnter:: {
     if Hooks.HookI.Topic != "" && Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookI.Topic && PrevTopic != Hooks.HookII.Topic {
-        if Random(0, 1)
+        if Random(0, 1) {
             ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
-        else
+            return
+        }
+        else {
             ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
+            return
+        }
     } else if Hooks.HookI.Topic && PrevTopic != Hooks.HookI.Topic {
         ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
         return
