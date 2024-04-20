@@ -182,9 +182,6 @@ outer:
         for Index, CumulativeWeight in WorkableData.Weights {
             if (Rand <= CumulativeWeight) {
                 RandomCategory := WorkableData.data[Index]
-                if RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category {
-                    MsgBox "fuck"
-                }
                 if RandomCategory.name == PrevCategory || RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category
                     continue outer
                 for LongHook in LongHooks {

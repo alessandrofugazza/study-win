@@ -58,18 +58,19 @@ UnworkableData :=
             "VS Code",
             "Chrome Devtools"
         ]
-    }, {
-        Name: "icdl",
-        Data: [
-            "Computer Essentials",
-            "Online Essentials",
-            "IT Security",
-            "Online Collaboration"
-        ]
+            ; }, {
+            ;     Name: "icdl",
+            ;     Data: [
+            ;         "Computer Essentials",
+            ;         "Online Essentials",
+            ;         "IT Security",
+            ;         "Online Collaboration"
+            ;     ]
+            ; }, {
     }, {
         Name: "office",
         Data: [
-            "PowerPoint",
+            ; "PowerPoint",
             "Word",
         ]
     }, {
