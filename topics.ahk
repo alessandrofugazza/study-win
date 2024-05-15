@@ -4,19 +4,13 @@ UnworkableData :=
         Data: ["HWiNFO"]
     }, {
         Name: "google",
-        Data: [
-            "Google"
-        ]
+        Data: ["Google"]
     }, {
         Name: "adblock",
-        Data: [
-            "uBlock Origin"
-        ]
+        Data: ["uBlock Origin"]
     }, {
         Name: "postman",
-        Data: [
-            "Postman"
-        ]
+        Data: ["Postman"]
     }, {
         Name: "english",
         Data: ["English"]
@@ -36,6 +30,9 @@ UnworkableData :=
             "React Bootstrap"
             "Bootstrap",
         ]
+    }, {
+        Name: "russian",
+        Data: ["Russian"]
     }, {
         Name: "japanese",
         Data: ["Japanese"],

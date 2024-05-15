@@ -11,7 +11,8 @@ A_IconTip := "Study"
 CustomPaths := {
     HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk",
     Japanese: "ahk_exe Kindle.exe",
-    German: "ahk_exe Kindle.exe"
+    German: "ahk_exe Kindle.exe",
+    Car_License: "ahk_exe Kindle.exe"
 }
 
 IconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
@@ -20,7 +21,7 @@ TraySetIcon IconPath
 MsgBoxTimer := "T1"
 
 FocusI := { Topic: "ICDL", Category: "office" }
-FocusII := { Topic: "ITS", Category: "its" }
+FocusII := { Topic: "Car_License", Category: "car license" } ; todo fuck this
 
 Hooks := {
     HookI: { Category: "", Topic: "" },
