@@ -12,6 +12,7 @@ CustomPaths := {
     HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk",
     Japanese: "ahk_exe Kindle.exe",
     German: "ahk_exe Kindle.exe",
+    Russian: "ahk_exe Kindle.exe",
     Car_License: "ahk_exe Kindle.exe"
 }
 
@@ -179,10 +180,10 @@ NumpadEnter:: {
 
 outer:
     while (true) {
-        Rand := Random(1, WorkableData.Weights[WorkableData.Len])
-        for Index, CumulativeWeight in WorkableData.Weights {
+        Rand := Random(1, ProcessedCommonData.Weights[ProcessedCommonData.Len])
+        for Index, CumulativeWeight in ProcessedCommonData.Weights {
             if (Rand <= CumulativeWeight) {
-                RandomCategory := WorkableData.data[Index]
+                RandomCategory := ProcessedCommonData.data[Index]
                 if RandomCategory.name == PrevCategory || RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category
                     continue outer
                 for LongHook in LongHooks {
