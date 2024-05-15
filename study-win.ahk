@@ -21,9 +21,6 @@ TraySetIcon IconPath
 
 MsgBoxTimer := "T1"
 
-FocusI := { Topic: "ICDL", Category: "office" }
-FocusII := { Topic: "Car_License", Category: "car license" } ; todo fuck this
-
 Hooks := {
     HookI: { Category: "", Topic: "" },
     HookII: { Category: "", Topic: "" }
@@ -31,18 +28,6 @@ Hooks := {
 
 LongHooks := []
 
-
-NumpadIns:: {
-    if PrevTopic == FocusI.Topic {
-        ActivateTopic(FocusII.Topic, FocusII.Category)
-    } else if PrevTopic == FocusII.Topic {
-        ActivateTopic(FocusI.Topic, FocusI.Category)
-    } else if Random(0, 1) {
-        ActivateTopic(FocusI.Topic, FocusI.Category)
-    } else {
-        ActivateTopic(FocusII.Topic, FocusII.Category)
-    }
-}
 
 ActivateTopic(Topic, Category, AddedStr?) {
     global PrevTopic, PrevCategory
@@ -183,11 +168,11 @@ outer:
         Rand := Random(1, ProcessedCommonData.Weights[ProcessedCommonData.Len])
         for Index, CumulativeWeight in ProcessedCommonData.Weights {
             if (Rand <= CumulativeWeight) {
-                RandomCategory := ProcessedCommonData.data[Index]
-                if RandomCategory.name == PrevCategory || RandomCategory.name == Hooks.HookI.Category || RandomCategory.name == Hooks.HookII.Category
+                RandomCategory := ProcessedCommonData.Data[Index]
+                if RandomCategory.Name == PrevCategory || RandomCategory.Name == Hooks.HookI.Category || RandomCategory.Name == Hooks.HookII.Category
                     continue outer
                 for LongHook in LongHooks {
-                    if RandomCategory.name == LongHook.Category
+                    if RandomCategory.Name == LongHook.Category
                         continue outer
                 }
                 Rand2 := Random(1, RandomCategory.Weights[RandomCategory.Len])
@@ -207,6 +192,26 @@ outer:
         }
     }
 
+}
+
+NumpadIns:: {
+outer:
+    while (true) {
+        Rand := Random(1, ProcessedFocusData.Weights[ProcessedFocusData.Len])
+        for Index, CumulativeWeight in ProcessedFocusData.Weights {
+            if (Rand <= CumulativeWeight) {
+                RandomCategory := ProcessedFocusData.Data[Index]
+                if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category ; todo fuck this too
+                    continue outer
+                for LongHook in LongHooks {
+                    if RandomCategory.Category == LongHook.Category
+                        continue outer
+                }
+                ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                break outer
+            }
+        }
+    }
 }
 
 NumpadRight:: ActivateTopic(PrevTopic, PrevCategory)

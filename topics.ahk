@@ -54,15 +54,6 @@ RawCommonData := [{
         "VS Code",
         "Chrome Devtools"
     ]
-        ; }, {
-        ;     Name: "icdl",
-        ;     Data: [
-        ;         "Computer Essentials",
-        ;         "Online Essentials",
-        ;         "IT Security",
-        ;         "Online Collaboration"
-        ;     ]
-        ; }, {
 }, {
     Name: "office",
     Data: [
@@ -82,13 +73,26 @@ RawFocusData := [{
     Category: "office",
     Topic: "ICDL"
 }, {
-    Category: "driving",
-    Topic: "Car License"
-}, {
     Category: "real life shit",
     Topic: "ICDL Tests Reservation"
 }
 ]
+
+
+; }, {
+;     Name: "icdl",
+;     Data: [
+;         "Computer Essentials",
+;         "Online Essentials",
+;         "IT Security",
+;         "Online Collaboration"
+;     ]
+; }, {
+
+; {
+; Category: "driving",
+;         Topic: "Car License"
+; },
 
 GetWeights(arr) {
     TotalWeight := 0
