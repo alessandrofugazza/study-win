@@ -39,12 +39,6 @@ RawCommonData := [{
     Name: "german",
     Data: ["German"]
 }, {
-    Name: "ios dev",
-    Data: [
-        "Swift",
-        "SwiftUI"
-    ]
-}, {
     Name: "ahk",
     Data: ["AHK"]
 }, {
@@ -53,12 +47,6 @@ RawCommonData := [{
         "IntelliJ",
         "VS Code",
         "Chrome Devtools"
-    ]
-}, {
-    Name: "office",
-    Data: [
-        ; "PowerPoint",
-        "Word",
     ]
 }, {
     Name: "real shit",
@@ -71,13 +59,20 @@ RawCommonData := [{
 
 RawFocusData := [{
     Category: "office",
-    Topic: "ICDL"
+    Topic: "Excel"
 }, {
-    Category: "real life shit",
-    Topic: "ICDL Tests Reservation"
+    Category: "office",
+    Topic: "Word"
 }
 ]
 
+; {
+; Name: "office",
+;         Data: [
+;             ; "PowerPoint",
+;             "Word",
+;         ]
+; },
 
 ; }, {
 ;     Name: "icdl",
