@@ -10,10 +10,11 @@ A_IconTip := "Study"
 
 CustomPaths := {
     HWiNFO: "C:\ProgramData\Microsoft\Windows\Start Menu\Programs\HWiNFO64\HWiNFO Manual.lnk",
+    Honda_SH125: "C:\Users\aless\Desktop\sh125.pdf",
     Japanese: "ahk_exe Kindle.exe",
     German: "ahk_exe Kindle.exe",
     Russian: "ahk_exe Kindle.exe",
-    Car_License: "ahk_exe Kindle.exe"
+    Driving_Book: "ahk_exe Kindle.exe"
 }
 
 IconPath := "C:\Users\aless\Desktop\projects\personal\ahk\study-win\tray-icon.ico"
@@ -27,7 +28,7 @@ Hooks := {
 }
 
 LongHooks := []
-
+PrevTime := 0
 
 ActivateTopic(Topic, Category, AddedStr?) {
     global PrevTopic, PrevCategory
@@ -46,9 +47,23 @@ ActivateTopic(Topic, Category, AddedStr?) {
     MsgBox Msg, , MsgBoxTimer
 }
 
+CheckIfTenMinutesPassed() {
+    global PrevTime
+    CurrentTickCount := A_TickCount
+    ElapsedTime := CurrentTickCount - PrevTime
+
+    if (ElapsedTime >= 10 * 60 * 1000) {
+        PrevTime := CurrentTickCount
+        return true
+    }
+    return false
+}
+
+
 Save() {
     IniWrite PrevTopic, "data.ini", "previous", "topic"
     IniWrite PrevCategory, "data.ini", "previous", "category"
+    IniWrite PrevTime, "data.ini", "previous", "time"
     IniWrite Hooks.HookI.Category, "data.ini", "hookI", "category"
     IniWrite Hooks.HookI.Topic, "data.ini", "hookI", "topic"
     IniWrite Hooks.HookII.Category, "data.ini", "hookII", "category"
@@ -66,9 +81,10 @@ Save() {
 }
 
 Load() {
-    global PrevTopic, PrevCategory, Hooks, LongHooks
+    global PrevTopic, PrevCategory, PrevTime, Hooks, LongHooks
     PrevCategory := IniRead("data.ini", "previous", "category")
     PrevTopic := IniRead("data.ini", "previous", "topic")
+    PrevTime := IniRead("data.ini", "previous", "time")
     Hooks.HookI.Category := IniRead("data.ini", "hookI", "category")
     Hooks.HookI.Topic := IniRead("data.ini", "hookI", "topic")
     Hooks.HookII.Category := IniRead("data.ini", "hookII", "category")
@@ -136,6 +152,10 @@ HookTopic() {
 }
 
 NumpadEnter:: {
+    if CheckIfTenMinutesPassed() {
+        ActivateTopic(UrgentTopic, UrgentCategory)
+        return
+    }
     if Hooks.HookI.Topic != "" && Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookI.Topic && PrevTopic != Hooks.HookII.Topic {
         if Random(0, 1) {
             ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
@@ -195,6 +215,27 @@ outer:
 }
 
 NumpadIns:: {
+    if CheckIfTenMinutesPassed() {
+        ActivateTopic(UrgentTopic, UrgentCategory)
+        return
+    }
+    flag := true
+    prevCheckedCategory := ProcessedFocusData.Data[1].Category
+    for Index, Value in ProcessedFocusData.Data {
+        if Index == 1
+            continue
+
+        if Value.Category != prevCheckedCategory {
+            flag := false
+            break
+        }
+    }
+    if flag || (ProcessedFocusData.Len == 1 && ProcessedFocusData.Data[1].Category == PrevCategory) {
+        MsgBox "Skipping Focus"
+        Send "{NumpadEnter}"
+        return
+    }
+
 outer:
     while (true) {
         Rand := Random(1, ProcessedFocusData.Weights[ProcessedFocusData.Len])

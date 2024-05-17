@@ -17,6 +17,13 @@ RawCommonData := [{
     Name: "ios shortcuts",
     Data: ["iOS Shortcuts"]
 }, {
+    Name: "devtools",
+    Data: [
+        "IntelliJ",
+        "VS Code",
+        "Chrome Devtools"
+    ]
+}, {
     Name: "webdev",
     Data: [
         "HTML",
@@ -30,24 +37,26 @@ RawCommonData := [{
         "Bootstrap",
     ]
 }, {
-    Name: "russian",
-    Data: ["Russian"]
-}, {
+    ; }, {
+    ;     Name: "russian",
+    ;     Data: ["Russian"]
+    ; }, {
     Name: "japanese",
     Data: ["Japanese"],
 }, {
-    Name: "german",
-    Data: ["German"]
-}, {
+    ; }, {
+    ;     Name: "german",
+    ;     Data: ["German"]
+    ; }, {
     Name: "ahk",
     Data: ["AHK"]
-}, {
-    Name: "devtools",
-    Data: [
-        "IntelliJ",
-        "VS Code",
-        "Chrome Devtools"
-    ]
+        ; }, {
+        ; }, {
+        ;     Name: "office",
+        ;     Data: [
+        ;         "PowerPoint",
+        ;         "Word",
+        ;     ]
 }, {
     Name: "real shit",
     Data: [
@@ -58,21 +67,16 @@ RawCommonData := [{
 ]
 
 RawFocusData := [{
-    Category: "office",
-    Topic: "Excel"
+    Category: "vehicle_engineering",
+    Topic: "Honda_SH125"
 }, {
-    Category: "office",
-    Topic: "Word"
+    Category: "driving",
+    Topic: "Driving_Book"
 }
 ]
 
-; {
-; Name: "office",
-;         Data: [
-;             ; "PowerPoint",
-;             "Word",
-;         ]
-; },
+UrgentTopic := "New Job"
+UrgentCategory := "real life shit"
 
 ; }, {
 ;     Name: "icdl",
