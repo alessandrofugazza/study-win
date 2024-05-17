@@ -81,7 +81,7 @@ Save() {
 }
 
 Load() {
-    global PrevTopic, PrevCategory, PrevTime, Hooks, LongHooks
+    global
     PrevCategory := IniRead("data.ini", "previous", "category")
     PrevTopic := IniRead("data.ini", "previous", "topic")
     PrevTime := IniRead("data.ini", "previous", "time")
@@ -91,7 +91,7 @@ Load() {
     Hooks.HookII.Topic := IniRead("data.ini", "hookII", "topic")
 
     ; Open the File for reading
-    File := FileOpen("data.txt", "r")
+    local File := FileOpen("data.txt", "r")
 
     ; Check if the File was successfully opened
     if !IsObject(File)
@@ -101,13 +101,13 @@ Load() {
     }
 
     ; Read the entire content of the File
-    FileContent := File.Read()
+    local FileContent := File.Read()
 
     ; Close the File
     File.Close()
 
     ; Split the File content into Lines
-    Lines := StrSplit(FileContent, "`n", "`r")
+    local Lines := StrSplit(FileContent, "`n", "`r")
     LongHooks := []
 
     ; Iterate over each line to deserialize it back into Objects
@@ -115,7 +115,7 @@ Load() {
     {
         if (Line = "")  ; Skip empty Lines
             continue
-        Parts := StrSplit(Line, "|")
+        local Parts := StrSplit(Line, "|")
         LongHooks.Push({ Category: Parts[1], Topic: Parts[2], Timer: Parts[3] })
     }
 
