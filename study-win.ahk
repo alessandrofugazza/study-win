@@ -165,7 +165,9 @@ NumpadEnter:: {
                 break
             }
         }
-        if flag || (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category == PrevCategory) {
+        if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
+            flag := false
+        if flag {
             MsgBox "Skipping Urgent"
             return
         }
@@ -297,9 +299,10 @@ urgentOuter:
             break
         }
     }
-    if flag || (ProcessedFocusData.Len == 1 && ProcessedFocusData.Data[1].Category == PrevCategory) {
+    if (ProcessedFocusData.Len == 1 && ProcessedFocusData.Data[1].Category != PrevCategory)
+        flag := false
+    if flag {
         MsgBox "Skipping Focus"
-        Send "{NumpadEnter}"
         return
     }
 

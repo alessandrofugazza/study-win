@@ -1,4 +1,7 @@
 RawCommonData := [{
+    Name: "ios shortcuts",
+    Data: ["iOS Shortcuts"]
+}, {
     Name: "computer hardware",
     Data: ["HWiNFO"]
 }, {
@@ -16,9 +19,6 @@ RawCommonData := [{
 }, {
     Name: "english",
     Data: ["English"]
-}, {
-    Name: "ios shortcuts",
-    Data: ["iOS Shortcuts"]
 }, {
     Name: "devtools",
     Data: [
@@ -44,9 +44,9 @@ RawCommonData := [{
     ;     Name: "russian",
     ;     Data: ["Russian"]
     ; }, {
-    Name: "japanese",
-    Data: ["Japanese"],
-}, {
+    ;     Name: "japanese",
+    ;     Data: ["Japanese"],
+    ; }, {
     ; }, {
     ;     Name: "german",
     ;     Data: ["German"]
