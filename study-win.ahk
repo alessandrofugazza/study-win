@@ -52,7 +52,7 @@ CheckIfTenMinutesPassed() {
     CurrentTickCount := A_TickCount
     ElapsedTime := CurrentTickCount - PrevTime
 
-    if (ElapsedTime >= 10 * 60 * 1000) {
+    if (ElapsedTime >= 15 * 60 * 1000) {
         PrevTime := CurrentTickCount
         return true
     }
@@ -152,8 +152,41 @@ HookTopic() {
 }
 
 NumpadEnter:: {
+    ; todo FUCKING HELL MATE THIS IS EMBARASSING
     if CheckIfTenMinutesPassed() {
-        ActivateTopic(UrgentTopic, UrgentCategory)
+        flag := true
+        prevCheckedCategory := ProcessedUrgentData.Data[1].Category
+        for Index, Value in ProcessedUrgentData.Data {
+            if Index == 1
+                continue
+
+            if Value.Category != prevCheckedCategory {
+                flag := false
+                break
+            }
+        }
+        if flag || (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category == PrevCategory) {
+            MsgBox "Skipping Urgent"
+            return
+        }
+
+urgentOuter:
+        while (true) {
+            Rand := Random(1, ProcessedUrgentData.Weights[ProcessedUrgentData.Len])
+            for Index, CumulativeWeight in ProcessedUrgentData.Weights {
+                if (Rand <= CumulativeWeight) {
+                    RandomCategory := ProcessedUrgentData.Data[Index]
+                    if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category
+                        continue urgentOuter
+                    for LongHook in LongHooks {
+                        if RandomCategory.Category == LongHook.Category
+                            continue urgentOuter
+                    }
+                    ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                    break urgentOuter
+                }
+            }
+        }
         return
     }
     if Hooks.HookI.Topic != "" && Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookI.Topic && PrevTopic != Hooks.HookII.Topic {
@@ -216,7 +249,41 @@ outer:
 
 NumpadIns:: {
     if CheckIfTenMinutesPassed() {
-        ActivateTopic(UrgentTopic, UrgentCategory)
+        flag := true
+        prevCheckedCategory := ProcessedUrgentData.Data[1].Category
+        for Index, Value in ProcessedUrgentData.Data {
+            if Index == 1
+                continue
+
+            if Value.Category != prevCheckedCategory {
+                flag := false
+                break
+            }
+        }
+        if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
+            flag := false
+        if flag {
+            MsgBox "Skipping Urgent"
+            return
+        }
+
+urgentOuter:
+        while (true) {
+            Rand := Random(1, ProcessedUrgentData.Weights[ProcessedUrgentData.Len])
+            for Index, CumulativeWeight in ProcessedUrgentData.Weights {
+                if (Rand <= CumulativeWeight) {
+                    RandomCategory := ProcessedUrgentData.Data[Index]
+                    if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category
+                        continue urgentOuter
+                    for LongHook in LongHooks {
+                        if RandomCategory.Category == LongHook.Category
+                            continue urgentOuter
+                    }
+                    ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                    break urgentOuter
+                }
+            }
+        }
         return
     }
     flag := true

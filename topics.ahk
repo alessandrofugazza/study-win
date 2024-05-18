@@ -2,6 +2,9 @@ RawCommonData := [{
     Name: "computer hardware",
     Data: ["HWiNFO"]
 }, {
+    Name: "computer software",
+    Data: ["HWiNFO_Info"] ; todo solve this shit
+}, {
     Name: "google",
     Data: ["Google"]
 }, {
@@ -75,8 +78,15 @@ RawFocusData := [{
 }
 ]
 
-UrgentTopic := "New Job"
-UrgentCategory := "real life shit"
+RawUrgentData := [{
+    Category: "real life shit",
+    Topic: "New Job"
+}
+    ; }, {
+    ;     Category: "trips",
+    ;     Topic: "Study Trip"
+    ; }
+]
 
 ; }, {
 ;     Name: "icdl",
@@ -104,9 +114,10 @@ GetWeights(arr) {
     return Weights
 }
 
-
+; todo this
 ProcessedCommonData := { Data: RawCommonData, Weights: GetWeights(RawCommonData), Len: RawCommonData.Length }
 ProcessedFocusData := { Data: RawFocusData, Weights: GetWeights(RawFocusData), Len: RawFocusData.Length }
+ProcessedUrgentData := { Data: RawUrgentData, Weights: GetWeights(RawUrgentData), Len: RawUrgentData.Length }
 
 for Index, Value in ProcessedCommonData.Data
 {
