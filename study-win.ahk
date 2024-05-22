@@ -35,7 +35,7 @@ ActivateTopic(Topic, Category, AddedStr?) {
     PrevTopic := Topic
     PrevCategory := Category
     if CustomPaths.HasProp(Topic) {
-        if SubStr(CustomPaths.%Topic%, 1, 3) = "C:\"
+        if SubStr(CustomPaths.%Topic%, 1, 3) = "C:\" ; todo if program is too slow to start it hides msgbox
             Run CustomPaths.%Topic%
         else {
             WinActivate(CustomPaths.%Topic%)
@@ -151,24 +151,30 @@ HookTopic() {
     }
 }
 
-NumpadEnter:: {
-    ; todo FUCKING HELL MATE THIS IS EMBARASSING
-    if CheckIfTenMinutesPassed() {
-        flag := true
-        prevCheckedCategory := ProcessedUrgentData.Data[1].Category
-        for Index, Value in ProcessedUrgentData.Data {
-            if Index == 1
-                continue
+CheckIfUrgentHasToBeSkipped() {
+    flag := true
+    prevCheckedCategory := ProcessedUrgentData.Data[1].Category
+    for Index, Value in ProcessedUrgentData.Data {
+        if Index == 1
+            continue
 
-            if Value.Category != prevCheckedCategory {
-                flag := false
-                break
-            }
-        }
-        if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
+        if Value.Category != prevCheckedCategory {
             flag := false
-        if flag {
-            MsgBox "Skipping Urgent"
+            break
+        }
+    }
+    if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
+        flag := false
+    if flag {
+        MsgBox "Skipping Urgent"
+        return true
+    }
+    return false
+}
+
+NumpadEnter:: {
+    if CheckIfTenMinutesPassed() {
+        if CheckIfUrgentHasToBeSkipped() {
             return
         }
 
@@ -251,21 +257,7 @@ outer:
 
 NumpadIns:: {
     if CheckIfTenMinutesPassed() {
-        flag := true
-        prevCheckedCategory := ProcessedUrgentData.Data[1].Category
-        for Index, Value in ProcessedUrgentData.Data {
-            if Index == 1
-                continue
-
-            if Value.Category != prevCheckedCategory {
-                flag := false
-                break
-            }
-        }
-        if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
-            flag := false
-        if flag {
-            MsgBox "Skipping Urgent"
+        if CheckIfUrgentHasToBeSkipped() {
             return
         }
 
@@ -288,41 +280,47 @@ urgentOuter:
         }
         return
     }
-    flag := true
-    prevCheckedCategory := ProcessedFocusData.Data[1].Category
-    for Index, Value in ProcessedFocusData.Data {
-        if Index == 1
-            continue
-
-        if Value.Category != prevCheckedCategory {
-            flag := false
-            break
-        }
-    }
-    if (ProcessedFocusData.Len == 1 && ProcessedFocusData.Data[1].Category != PrevCategory)
-        flag := false
-    if flag {
-        MsgBox "Skipping Focus"
+    if ProcessedFocusData.Len == 0 {
+        MsgBox "idiot"
         return
-    }
+    } else {
+        flag := true
+        prevCheckedCategory := ProcessedFocusData.Data[1].Category
+        for Index, Value in ProcessedFocusData.Data {
+            if Index == 1
+                continue
+
+            if Value.Category != prevCheckedCategory {
+                flag := false
+                break
+            }
+        }
+        if (ProcessedFocusData.Len == 1 && ProcessedFocusData.Data[1].Category != PrevCategory)
+            flag := false
+        if flag {
+            MsgBox "Skipping Focus"
+            return
+        }
 
 outer:
-    while (true) {
-        Rand := Random(1, ProcessedFocusData.Weights[ProcessedFocusData.Len])
-        for Index, CumulativeWeight in ProcessedFocusData.Weights {
-            if (Rand <= CumulativeWeight) {
-                RandomCategory := ProcessedFocusData.Data[Index]
-                if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category ; todo fuck this too
-                    continue outer
-                for LongHook in LongHooks {
-                    if RandomCategory.Category == LongHook.Category
+        while (true) {
+            Rand := Random(1, ProcessedFocusData.Weights[ProcessedFocusData.Len])
+            for Index, CumulativeWeight in ProcessedFocusData.Weights {
+                if (Rand <= CumulativeWeight) {
+                    RandomCategory := ProcessedFocusData.Data[Index]
+                    if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category ; todo fuck this too
                         continue outer
+                    for LongHook in LongHooks {
+                        if RandomCategory.Category == LongHook.Category
+                            continue outer
+                    }
+                    ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                    break outer
                 }
-                ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
-                break outer
             }
         }
     }
+
 }
 
 NumpadRight:: ActivateTopic(PrevTopic, PrevCategory)

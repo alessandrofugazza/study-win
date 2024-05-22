@@ -1,9 +1,9 @@
 RawCommonData := [{
-    Name: "ios shortcuts",
-    Data: ["iOS Shortcuts"]
-}, {
     Name: "computer hardware",
     Data: ["HWiNFO"]
+}, { Name: "ios shortcuts", Data: ["iOS Shortcuts"] }, {
+    Name: "office",
+    Data: ["Excel"]
 }, {
     Name: "computer software",
     Data: ["HWiNFO_Info"] ; todo solve this shit
@@ -16,17 +16,14 @@ RawCommonData := [{
 }, {
     Name: "postman",
     Data: ["Postman"]
-}, {
-    Name: "english",
-    Data: ["English"]
-}, {
+}, { Name: "english", Data: ["English"] }, {
     Name: "devtools",
     Data: [
         "IntelliJ",
         "VS Code",
         "Chrome Devtools"
     ]
-}, {
+}, { Name: "ios dev", Data: ["Swift", "SwiftUI"] }, {
     Name: "webdev",
     Data: [
         "HTML",
@@ -40,17 +37,15 @@ RawCommonData := [{
         "Bootstrap",
     ]
 }, {
-    ; }, {
-    ;     Name: "russian",
-    ;     Data: ["Russian"]
-    ; }, {
-    ;     Name: "japanese",
-    ;     Data: ["Japanese"],
-    ; }, {
-    ; }, {
-    ;     Name: "german",
-    ;     Data: ["German"]
-    ; }, {
+    Name: "russian",
+    Data: ["Russian"]
+}, {
+    Name: "japanese",
+    Data: ["Japanese"],
+}, {
+    Name: "german",
+    Data: ["German"]
+}, {
     Name: "ahk",
     Data: ["AHK"]
         ; }, {
@@ -66,16 +61,25 @@ RawCommonData := [{
         "Improvement",
         "Task",
     ]
+}, {
+    Name: "coding",
+    Data: [
+        "coding learn",
+        "coding todo",
+        ; "coding"
+    ]
 }
 ]
 
-RawFocusData := [{
-    Category: "vehicle_engineering",
-    Topic: "Honda_SH125"
-}, {
-    Category: "driving",
-    Topic: "Driving_Book"
-}
+RawFocusData := [
+    ;     {
+    ;     Category: "vehicle_engineering",
+    ;     Topic: "Honda_SH125"
+    ; }, {
+    ; {
+    ;     Category: "driving",
+    ;     Topic: "Driving_Book"
+    ; }
 ]
 
 RawUrgentData := [{
