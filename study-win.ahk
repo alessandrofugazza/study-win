@@ -22,13 +22,8 @@ TraySetIcon IconPath
 
 MsgBoxTimer := "T1"
 
-Hooks := {
-    HookI: { Category: "", Topic: "" },
-    HookII: { Category: "", Topic: "" }
-}
-
+Hooks := []
 LongHooks := []
-PrevTime := 0
 
 ActivateTopic(Topic, Category, AddedStr?) {
     global PrevTopic, PrevCategory
@@ -47,194 +42,160 @@ ActivateTopic(Topic, Category, AddedStr?) {
     MsgBox Msg, , MsgBoxTimer
 }
 
-CheckIfTenMinutesPassed() {
-    global PrevTime
-    CurrentTickCount := A_TickCount
-    ElapsedTime := CurrentTickCount - PrevTime
-
-    if (ElapsedTime >= 15 * 60 * 1000) {
-        PrevTime := CurrentTickCount
+CheckIfTimeHasPassed(Timer, Time) {
+    ElapsedTime := A_TickCount - Timer
+    if (ElapsedTime > Time * 60 * 1000)
         return true
-    }
-    return false
+    else
+        return false
 }
 
-
-Save() {
-    IniWrite PrevTopic, "data.ini", "previous", "topic"
-    IniWrite PrevCategory, "data.ini", "previous", "category"
-    IniWrite PrevTime, "data.ini", "previous", "time"
-    IniWrite Hooks.HookI.Category, "data.ini", "hookI", "category"
-    IniWrite Hooks.HookI.Topic, "data.ini", "hookI", "topic"
-    IniWrite Hooks.HookII.Category, "data.ini", "hookII", "category"
-    IniWrite Hooks.HookII.Topic, "data.ini", "hookII", "topic"
-
+SaveLongData(Data, FilePath) {
     SerializedData := ""
-    for _, Obj in LongHooks
+    for _, Obj in Data
     {
         SerializedData .= Obj.Category . "|" . Obj.Topic . "|" . Obj.Timer . "`n"
     }
 
-    FileDelete "data.txt"
-    FileAppend SerializedData, "data.txt"
+    FileDelete FilePath
+    FileAppend SerializedData, FilePath
+}
+
+Save() {
+    IniWrite PrevTopic, "data.ini", "previous", "topic"
+    IniWrite PrevCategory, "data.ini", "previous", "category"
+    IniWrite PrevUrgentTimer, "data.ini", "previous", "urgentTimer"
+
+    SaveLongData(Hooks, "hooks-data.txt")
+    SaveLongData(LongHooks, "long-hooks-data.txt")
+}
+
+LoadLongData(Data, FilePath) {
+    File := FileOpen(FilePath, "r")
+    FileContent := File.Read()
+    File.Close()
+    Lines := StrSplit(FileContent, "`n", "`r")
+    Data := []
+
+    for Each, Line in Lines
+    {
+        if (Line = "")
+            continue
+        Parts := StrSplit(Line, "|")
+        Data.Push({ Category: Parts[1], Topic: Parts[2], Timer: Parts[3] })
+    }
+    return Data
 
 }
 
 Load() {
-    global
-    PrevCategory := IniRead("data.ini", "previous", "category")
-    PrevTopic := IniRead("data.ini", "previous", "topic")
-    PrevTime := IniRead("data.ini", "previous", "time")
-    Hooks.HookI.Category := IniRead("data.ini", "hookI", "category")
-    Hooks.HookI.Topic := IniRead("data.ini", "hookI", "topic")
-    Hooks.HookII.Category := IniRead("data.ini", "hookII", "category")
-    Hooks.HookII.Topic := IniRead("data.ini", "hookII", "topic")
-
-    ; Open the File for reading
-    local File := FileOpen("data.txt", "r")
-
-    ; Check if the File was successfully opened
-    if !IsObject(File)
-    {
-        MsgBox "Failed to open File."
-        return
-    }
-
-    ; Read the entire content of the File
-    local FileContent := File.Read()
-
-    ; Close the File
-    File.Close()
-
-    ; Split the File content into Lines
-    local Lines := StrSplit(FileContent, "`n", "`r")
-    LongHooks := []
-
-    ; Iterate over each line to deserialize it back into Objects
-    for Each, Line in Lines
-    {
-        if (Line = "")  ; Skip empty Lines
-            continue
-        local Parts := StrSplit(Line, "|")
-        LongHooks.Push({ Category: Parts[1], Topic: Parts[2], Timer: Parts[3] })
-    }
-
+    global PrevCategory := IniRead("data.ini", "previous", "category")
+    global PrevTopic := IniRead("data.ini", "previous", "topic")
+    global PrevUrgentTimer := IniRead("data.ini", "previous", "urgentTimer")
+    global Hooks
+    global LongHooks
+    Hooks := LoadLongData(Hooks, "hooks-data.txt")
+    LongHooks := LoadLongData(LongHooks, "long-hooks-data.txt")
 }
 
 HookTopic() {
     global Hooks
-    if PrevTopic == Hooks.HookI.Topic {
-        Hooks.HookI.Topic := Hooks.HookII.Topic
-        Hooks.HookI.Category := Hooks.HookII.Category
-        Hooks.HookII.Topic := ""
-        Hooks.HookII.Category := ""
+    if Hooks.Length > 0 && PrevTopic == Hooks[Hooks.Length].Topic {
+        Hooks.RemoveAt(Hooks.Length)
         MsgBox "`"" PrevTopic "`" dehooked.", , MsgBoxTimer
         return
-    } else if PrevTopic == Hooks.HookII.Topic {
-        Hooks.HookII.Topic := ""
-        Hooks.HookII.Category := ""
-        MsgBox "`"" PrevTopic "`" dehooked.", , MsgBoxTimer
-        return
-    }
-    if Hooks.HookI.Topic != "" {
-        if Hooks.HookII.Topic != "" {
-            MsgBox "no more hooks available bitch"
-        } else {
-            Hooks.HookII.Topic := PrevTopic
-            Hooks.HookII.Category := PrevCategory
-            MsgBox "`"" PrevTopic "`" hooked", , MsgBoxTimer
-        }
     } else {
-        Hooks.HookI.Topic := PrevTopic
-        Hooks.HookI.Category := PrevCategory
+        NewHook := {}
+        NewHook.Topic := PrevTopic
+        NewHook.Category := PrevCategory
+        NewHook.Timer := A_TickCount
+        Hooks.Push(NewHook)
         MsgBox "`"" PrevTopic "`" hooked", , MsgBoxTimer
+
     }
 }
 
 CheckIfUrgentHasToBeSkipped() {
-    flag := true
-    prevCheckedCategory := ProcessedUrgentData.Data[1].Category
-    for Index, Value in ProcessedUrgentData.Data {
-        if Index == 1
-            continue
+    if ProcessedUrgentData.Len > 0 {
 
-        if Value.Category != prevCheckedCategory {
-            flag := false
-            break
+        Flag := true
+        PrevCheckedCategory := ProcessedUrgentData.Data[1].Category
+        for Index, Value in ProcessedUrgentData.Data {
+            if Index == 1
+                continue
+
+            if Value.Category != PrevCheckedCategory {
+                Flag := false
+                break
+            }
         }
-    }
-    if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
-        flag := false
-    if flag {
-        MsgBox "Skipping Urgent"
-        return true
-    }
-    return false
+        if (ProcessedUrgentData.Len == 1 && ProcessedUrgentData.Data[1].Category != PrevCategory)
+            Flag := false
+        if Flag {
+            MsgBox "Skipping Urgent"
+            return true
+        }
+        return false
+    } else
+        return false
 }
 
 NumpadEnter:: {
-    if CheckIfTenMinutesPassed() {
+    global PrevUrgentTimer
+    if CheckIfTimeHasPassed(PrevUrgentTimer, 15) {
         if CheckIfUrgentHasToBeSkipped() {
-            return
-        }
-
 urgentOuter:
-        while (true) {
-            Rand := Random(1, ProcessedUrgentData.Weights[ProcessedUrgentData.Len])
-            for Index, CumulativeWeight in ProcessedUrgentData.Weights {
-                if (Rand <= CumulativeWeight) {
-                    RandomCategory := ProcessedUrgentData.Data[Index]
-                    if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category
-                        continue urgentOuter
-                    for LongHook in LongHooks {
-                        if RandomCategory.Category == LongHook.Category
+            while (true) {
+                Rand := Random(1, ProcessedUrgentData.Weights[ProcessedUrgentData.Len])
+                for Index, CumulativeWeight in ProcessedUrgentData.Weights {
+                    if (Rand <= CumulativeWeight) {
+                        RandomCategory := ProcessedUrgentData.Data[Index]
+                        if RandomCategory.Category == PrevCategory || RandomCategory.Category == Hooks.HookI.Category || RandomCategory.Category == Hooks.HookII.Category
                             continue urgentOuter
+                        for LongHook in LongHooks {
+                            if RandomCategory.Category == LongHook.Category
+                                continue urgentOuter
+                        }
+                        PrevUrgentTimer := A_TickCount
+                        ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                        break urgentOuter
                     }
-                    ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
-                    break urgentOuter
                 }
             }
-        }
-        return
-    }
-    if Hooks.HookI.Topic != "" && Hooks.HookII.Topic != "" && PrevTopic != Hooks.HookI.Topic && PrevTopic != Hooks.HookII.Topic {
-        if Random(0, 1) {
-            ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
             return
         }
-        else {
-            ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
-            return
-        }
-    } else if Hooks.HookI.Topic && PrevTopic != Hooks.HookI.Topic {
-        ActivateTopic(Hooks.HookI.Topic, Hooks.HookI.Category, "[HOOKED]")
-        return
-    } else if Hooks.HookII.Topic && PrevTopic != Hooks.HookII.Topic {
-        ActivateTopic(Hooks.HookII.Topic, Hooks.HookII.Category, "[HOOKED]")
-        return
     }
 
-    for Index, LongHook in LongHooks {
-        LongHook.Timer -= 1
+
+    if (Hooks.Length > 0 && (CheckIfTimeHasPassed(Hooks[1].Timer, 5))) {
+        ActivateTopic(Hooks[1].Topic, Hooks[1].Category, "[HOOKED]")
+        removedHook := Hooks.RemoveAt(1)
+        removedHook.Timer := A_TickCount
+        Hooks.Push(removedHook)
+        return
     }
-    if LongHooks.Length > 0 && LongHooks[1].Timer <= 0 {
+    if LongHooks.Length > 0 && (A_TickCount - LongHooks[1].Timer) > 15 * 60 * 1000 {
         ExpiredLongHook := LongHooks.RemoveAt(1)
         ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
         return
     }
-
-
 outer:
     while (true) {
         Rand := Random(1, ProcessedCommonData.Weights[ProcessedCommonData.Len])
         for Index, CumulativeWeight in ProcessedCommonData.Weights {
             if (Rand <= CumulativeWeight) {
                 RandomCategory := ProcessedCommonData.Data[Index]
-                if RandomCategory.Name == PrevCategory || RandomCategory.Name == Hooks.HookI.Category || RandomCategory.Name == Hooks.HookII.Category
+                if RandomCategory.Name == PrevCategory
                     continue outer
-                for LongHook in LongHooks {
-                    if RandomCategory.Name == LongHook.Category
+                for Hook in Hooks {
+                    if Hook.Category == RandomCategory.Name {
                         continue outer
+                    }
+                }
+                for LongHook in LongHooks {
+                    if LongHook.Category == RandomCategory.Name {
+                        continue outer
+                    }
                 }
                 Rand2 := Random(1, RandomCategory.Weights[RandomCategory.Len])
                 for Index2, CumulativeWeight2 in RandomCategory.Weights {
@@ -248,15 +209,13 @@ outer:
                         break outer
                     }
                 }
-
             }
         }
     }
-
 }
 
 NumpadIns:: {
-    if CheckIfTenMinutesPassed() {
+    if CheckIfTimeHasPassed(PrevUrgentTimer, 15) {
         if CheckIfUrgentHasToBeSkipped() {
             return
         }
@@ -274,6 +233,7 @@ urgentOuter:
                             continue urgentOuter
                     }
                     ActivateTopic(RandomCategory.Topic, RandomCategory.Category)
+                    PrevUrgentTimer := A_TickCount
                     break urgentOuter
                 }
             }
@@ -329,14 +289,13 @@ NumpadDel:: HookTopic()
 
 LongHookTopic() {
     global Hooks, LongHooks
-    if PrevTopic == Hooks.HookI.Topic {
-        Hooks.HookI.Topic := ""
-        Hooks.HookI.Category := ""
-    } else if PrevTopic == Hooks.HookII.Topic {
-        Hooks.HookII.Topic := ""
-        Hooks.HookII.Category := ""
+    for Hook in Hooks {
+        if Hook.Topic == PrevTopic {
+            Hooks.RemoveAt(A_Index)
+            break
+        }
     }
-    LongHooks.Push({ Category: PrevCategory, Topic: PrevTopic, Timer: 5 })
+    LongHooks.Push({ Category: PrevCategory, Topic: PrevTopic, Timer: A_TickCount })
 }
 
 NumpadPgdn:: {
@@ -348,7 +307,11 @@ NumpadSub:: {
     Choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload", , "w100 h200")
     Choice := Choice.Value
     if Choice == "1" {
-        MsgBox "Hook I:`t`t" Hooks.HookI.Topic "`nHook II:`t`t" Hooks.HookII.Topic "`n`nCurrent Topic:`t" PrevTopic
+        Msg := ""
+        for Hook in Hooks {
+            Msg := Msg . A_Index . "`t" . Hook.Topic . "`n"
+        }
+        MsgBox Msg
     } else if Choice == "2" {
         Msg := ""
         for LongHook in LongHooks {

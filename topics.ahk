@@ -1,91 +1,78 @@
 RawCommonData := [{
+    Name: "encyclopedia",
+    Data: [
+        "Anatomy",
+        "Diagnostics",
+        "Antropology",
+        "Genetics",
+        "Psychiatry",
+        "Psychology",
+    ]
+}, {
     Name: "computer hardware",
-    Data: ["HWiNFO"]
-}, { Name: "ios shortcuts", Data: ["iOS Shortcuts"] }, {
+    Data: [
+        "Device Monitor",
+        "HWiNFO"
+    ]
+}, {
+    Name: "ios shortcuts",
+    Data: ["iOS Shortcuts"]
+}, {
     Name: "office",
-    Data: ["Excel"]
+    Data: [
+        "Word",
+        "Excel"
+    ]
+}, {
+    Name: "search engines",
+    Data: ["Google"]
 }, {
     Name: "computer software",
-    Data: ["HWiNFO_Info"] ; todo solve this shit
-}, {
-    Name: "google",
-    Data: ["Google"]
+    Data: [
+        "Working Copy",
+        "HWiNFO_Info"
+    ] ; todo solve this shit
 }, {
     Name: "adblock",
     Data: ["uBlock Origin"]
 }, {
     Name: "postman",
     Data: ["Postman"]
-}, { Name: "english", Data: ["English"] }, {
+}, {
     Name: "devtools",
     Data: [
         "IntelliJ",
         "VS Code",
         "Chrome Devtools"
     ]
-}, { Name: "ios dev", Data: ["Swift", "SwiftUI"] }, {
-    Name: "webdev",
+}, {
+    Name: "coding",
     Data: [
         "HTML",
         "CSS",
         "JavaScript",
         "TypeScript",
         "Java",
+        "Query",
+        "AHK",
         "Spring",
-        "React",
-        "React Bootstrap"
         "Bootstrap",
-    ]
-}, {
-    Name: "russian",
-    Data: ["Russian"]
-}, {
-    Name: "japanese",
-    Data: ["Japanese"],
-}, {
-    Name: "german",
-    Data: ["German"]
-}, {
-    Name: "ahk",
-    Data: ["AHK"]
-        ; }, {
-        ; }, {
-        ;     Name: "office",
-        ;     Data: [
-        ;         "PowerPoint",
-        ;         "Word",
-        ;     ]
-}, {
-    Name: "real shit",
-    Data: [
-        "Improvement",
-        "Task",
-    ]
-}, {
-    Name: "coding",
-    Data: [
-        "coding learn",
-        "coding todo",
-        ; "coding"
+        "React Bootstrap",
+        "React",
+        "Swift",
+        "SwiftUI",
+        "Coding Learn"
     ]
 }
 ]
 
-RawFocusData := [
+RawFocusData := []
+
+RawUrgentData := [
     ;     {
-    ;     Category: "vehicle_engineering",
-    ;     Topic: "Honda_SH125"
-    ; }, {
-    ; {
-    ;     Category: "driving",
-    ;     Topic: "Driving_Book"
+    ;     Category: "real life shit",
+    ;     Topic: "New Job"
     ; }
-]
-
-RawUrgentData := [{
-    Category: "real life shit",
-    Topic: "New Job"
-}
     ; }, {
     ;     Category: "trips",
     ;     Topic: "Study Trip"

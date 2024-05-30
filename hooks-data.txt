@@ -1,0 +1,3 @@
+ios shortcuts|iOS Shortcuts|268516046
+computer hardware|HWiNFO|308008906
+devtools|Chrome Devtools|308105828
