@@ -304,7 +304,7 @@ NumpadPgdn:: {
 }
 
 NumpadSub:: {
-    Choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload", , "w100 h200")
+    Choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload`n5. Insert Urgent", , "w100 h200")
     Choice := Choice.Value
     if Choice == "1" {
         Msg := ""
@@ -325,6 +325,10 @@ NumpadSub:: {
         Save()
         MsgBox "Reloaded."
         Reload()
+    } else if Choice == "5" {
+        global PrevTopic := "Urgent"
+        global PrevCategory := "Urgent"
+        HookTopic()
     }
     else
         MsgBox "idiot"

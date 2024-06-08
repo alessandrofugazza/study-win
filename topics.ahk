@@ -1,14 +1,4 @@
 RawCommonData := [{
-    Name: "encyclopedia",
-    Data: [
-        "Anatomy",
-        "Diagnostics",
-        "Antropology",
-        "Genetics",
-        "Psychiatry",
-        "Psychology",
-    ]
-}, {
     Name: "computer hardware",
     Data: [
         "Device Monitor",
@@ -18,32 +8,28 @@ RawCommonData := [{
     Name: "ios shortcuts",
     Data: ["iOS Shortcuts"]
 }, {
-    Name: "office",
-    Data: [
-        "Word",
-        "Excel"
-    ]
-}, {
-    Name: "search engines",
-    Data: ["Google"]
-}, {
     Name: "computer software",
     Data: [
         "Working Copy",
         "HWiNFO_Info"
     ] ; todo solve this shit
 }, {
+    Name: "office",
+    Data: [
+        "Word",
+        "Excel"
+    ]
+}, {
     Name: "adblock",
     Data: ["uBlock Origin"]
 }, {
-    Name: "postman",
-    Data: ["Postman"]
+    Name: "web",
+    Data: ["DuckDuckGo", "Tor"]
 }, {
     Name: "devtools",
     Data: [
-        "IntelliJ",
-        "VS Code",
         "Chrome Devtools"
+        "VS Code",
     ]
 }, {
     Name: "coding",
@@ -52,13 +38,10 @@ RawCommonData := [{
         "CSS",
         "JavaScript",
         "TypeScript",
-        "Java",
-        "Query",
-        "AHK",
-        "Spring",
         "Bootstrap",
         "React Bootstrap",
         "React",
+        "AHK",
         "Swift",
         "SwiftUI",
         "Coding Learn"
@@ -98,17 +81,20 @@ GetWeights(arr) {
     TotalWeight := 0
     Weights := []
     for Index, Value in arr {
-        Weight := 1.2 ** Index
+        Weight := 1.5 ** Index
         TotalWeight += Weight
         Weights.Push(TotalWeight)
     }
     return Weights
 }
 
-; todo this
-ProcessedCommonData := { Data: RawCommonData, Weights: GetWeights(RawCommonData), Len: RawCommonData.Length }
-ProcessedFocusData := { Data: RawFocusData, Weights: GetWeights(RawFocusData), Len: RawFocusData.Length }
-ProcessedUrgentData := { Data: RawUrgentData, Weights: GetWeights(RawUrgentData), Len: RawUrgentData.Length }
+ProcessData(RawData) {
+    return { Data: RawData, Weights: GetWeights(RawData), Len: RawData.Length }
+}
+
+ProcessedCommonData := ProcessData(RawCommonData)
+ProcessedFocusData := ProcessData(RawFocusData)
+ProcessedUrgentData := ProcessData(RawUrgentData)
 
 for Index, Value in ProcessedCommonData.Data
 {
