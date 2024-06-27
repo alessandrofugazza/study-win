@@ -1,8 +1,70 @@
+Multiplier := 1.15
+
 RawCommonData := [{
+    Name: "ml",
+    Data: [
+        "ML Article",
+        "ML Book",
+    ]
+}, {
+    Name: "diagnostics",
+    Data: [
+        "Diagnostics Article",
+        "Diagnostics Book",
+    ]
+}, {
+    Name: "anatomy",
+    Data: [
+        "Anatomy Article",
+        "Anatomy Book",
+    ]
+}, {
+    Name: "anthropology",
+    Data: [
+        "Anthropology Article",
+        "Anthropology Book",
+    ]
+}, {
+    Name: "psychiatry",
+    Data: [
+        "Psychiatry Article",
+        "Psychiatry Book",
+    ]
+}, {
+    Name: "psychology",
+    Data: [
+        "Psychology Article",
+        "Psychology Book",
+    ]
+}, {
+    Name: "body language",
+    Data: [
+        "Body Language Article",
+        "Body Language Book",
+    ]
+}, {
+    Name: "cooking",
+    Data: [
+        "Cooking Article",
+        "Cooking Book",
+    ]
+}, {
+    Name: "poker",
+    Data: [
+        "Poker Article",
+        "Poker Book",
+    ]
+}, {
+    Name: "mechanic",
+    Data: [
+        "Mechanic Article",
+        "Mechanic Book",
+    ]
+}, {
     Name: "computer hardware",
     Data: [
         "Device Monitor",
-        "HWiNFO"
+        "HWiNFO (hardware)"
     ]
 }, {
     Name: "ios shortcuts",
@@ -11,77 +73,98 @@ RawCommonData := [{
     Name: "computer software",
     Data: [
         "Working Copy",
-        "HWiNFO_Info"
-    ] ; todo solve this shit
-}, {
-    Name: "office",
-    Data: [
-        "Word",
-        "Excel"
+        "HWiNFO (sofware)",
+        "Proton VPN"
     ]
 }, {
     Name: "adblock",
-    Data: ["uBlock Origin"]
+    Data: [
+        "AdGuard",
+        "uBlock Origin"
+    ]
 }, {
     Name: "web",
-    Data: ["DuckDuckGo", "Tor"]
+    Data: [
+        "DuckDuckGo",
+        "Tor"
+    ]
 }, {
     Name: "devtools",
     Data: [
-        "Chrome Devtools"
+        "Chrome Devtools",
+        "Swift Playground",
         "VS Code",
     ]
 }, {
-    Name: "coding",
+    Name: "webdev",
     Data: [
+        "Java",
         "HTML",
         "CSS",
         "JavaScript",
         "TypeScript",
+        "Query",
+        "Spring",
         "Bootstrap",
         "React Bootstrap",
         "React",
-        "AHK",
+        "Web Dev Coding"
+    ]
+}, {
+    name: "swift",
+    Data: [
         "Swift",
         "SwiftUI",
-        "Coding Learn"
+        "Swift Coding"
     ]
-}
-]
+}, {
+    Name: "ahk",
+    Data: [
+        "AHK Docs",
+        "AHK Coding"
+    ]
+}, {
+    Name: "english",
+    Data: [
+        "English Article",
+        "English Book"
+    ]
+}, {
+    Name: "russian",
+    Data: [
+        "Russian Article",
+        "Russian Book",
+    ]
+}, {
+    Name: "japanese",
+    Data: [
+        "Japanese Article",
+        "Japanese Book",
+    ]
+}, {
+    Name: "german",
+    Data: [
+        "German Article",
+        "German Book",
+    ]
+}, {
+    Name: "driving",
+    Data: [
+        "Driving Article",
+        "Driving Book",
+    ]
+}]
 
 RawFocusData := []
 
-RawUrgentData := [
-    ;     {
-    ;     Category: "real life shit",
-    ;     Topic: "New Job"
-    ; }
-    ; }, {
-    ;     Category: "trips",
-    ;     Topic: "Study Trip"
-    ; }
-]
+RawUrgentData := []
 
-; }, {
-;     Name: "icdl",
-;     Data: [
-;         "Computer Essentials",
-;         "Online Essentials",
-;         "IT Security",
-;         "Online Collaboration"
-;     ]
-; }, {
-
-; {
-; Category: "driving",
-;         Topic: "Car License"
-; },
 
 GetWeights(arr) {
     TotalWeight := 0
     Weights := []
     for Index, Value in arr {
-        Weight := 1.5 ** Index
+        Weight := Multiplier ** Index
         TotalWeight += Weight
         Weights.Push(TotalWeight)
     }

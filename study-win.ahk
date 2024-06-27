@@ -25,6 +25,9 @@ MsgBoxTimer := "T1"
 Hooks := []
 LongHooks := []
 
+HookTimer := 5
+LongHookTimer := 15
+
 ActivateTopic(Topic, Category, AddedStr?) {
     global PrevTopic, PrevCategory
     PrevTopic := Topic
@@ -167,14 +170,14 @@ urgentOuter:
     }
 
 
-    if (Hooks.Length > 0 && (CheckIfTimeHasPassed(Hooks[1].Timer, 5))) {
+    if (Hooks.Length > 0 && (CheckIfTimeHasPassed(Hooks[1].Timer, HookTimer))) {
         ActivateTopic(Hooks[1].Topic, Hooks[1].Category, "[HOOKED]")
         removedHook := Hooks.RemoveAt(1)
         removedHook.Timer := A_TickCount
         Hooks.Push(removedHook)
         return
     }
-    if LongHooks.Length > 0 && (A_TickCount - LongHooks[1].Timer) > 15 * 60 * 1000 {
+    if LongHooks.Length > 0 && (A_TickCount - LongHooks[1].Timer) > LongHookTimer * 60 * 1000 {
         ExpiredLongHook := LongHooks.RemoveAt(1)
         ActivateTopic(ExpiredLongHook.Topic, ExpiredLongHook.Category, "[LONG HOOKED]")
         return
@@ -214,7 +217,7 @@ outer:
     }
 }
 
-NumpadIns:: {
+NumpadSub:: {
     if CheckIfTimeHasPassed(PrevUrgentTimer, 15) {
         if CheckIfUrgentHasToBeSkipped() {
             return
@@ -303,7 +306,7 @@ NumpadPgdn:: {
     MsgBox "`"" PrevTopic "`" long hooked", , MsgBoxTimer
 }
 
-NumpadSub:: {
+NumpadIns:: {
     Choice := InputBox("1. Print hooks`n2. Print long hooks`n3. Save`n4. Reload`n5. Insert Urgent", , "w100 h200")
     Choice := Choice.Value
     if Choice == "1" {

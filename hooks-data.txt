@@ -1,3 +1,4 @@
-web|DuckDuckGo|557440937
-coding|React Bootstrap|557547703
-devtools|Chrome Devtools|566577500
+ios shortcuts|iOS Shortcuts|0
+swift|Swift Coding|0
+web|DuckDuckGo|0
+mechanic|Mechanic Book|0
